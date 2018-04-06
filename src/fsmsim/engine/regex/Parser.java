@@ -1,7 +1,8 @@
 package fsmsim.model.regex;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface Parser {
-	Collection<Literals> parse(String parseString);
+	List<Characters> parse(String parseString);
+	Tree createTree(List<Characters> parseRegex);
 }

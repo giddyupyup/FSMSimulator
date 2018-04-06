@@ -5,12 +5,12 @@ import fsmsim.engine.Specials;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class RegexParser implements Parser {
 
 	@Override
-	public Collection<Characters> parse(final String parseString) {
+	public List<Characters> parse(final String parseString) {
 
 		final List<Characters> literals = new ArrayList<>();
 
