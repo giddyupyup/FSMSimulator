@@ -11,6 +11,10 @@ public abstract class Node {
 		return nodeType;
 	}
 
+	public Node getNode() {
+		return null;
+	}
+
 	public static class AltNode extends Node {
 		private Node node;
 
@@ -20,6 +24,10 @@ public abstract class Node {
 			this.node = node;
 		}
 
+		@Override
+		public Node getNode() {
+			return this.node;
+		}
 	}
 
 	public static class SeqNode extends Node {
@@ -29,6 +37,11 @@ public abstract class Node {
 					   final Node node) {
 			super(nodeType);
 			this.node = node;
+		}
+
+		@Override
+		public Node getNode() {
+			return this.node;
 		}
 	}
 
@@ -40,10 +53,16 @@ public abstract class Node {
 			super(nodeType);
 			this.node = node;
 		}
+
+		@Override
+		public Node getNode() {
+			return this.node;
+		}
 	}
 
 	public static class LitNode extends Node {
 		private String alphabet;
+
 		public LitNode(final NodeType nodeType,
 					   final String alphabet) {
 			super(nodeType);

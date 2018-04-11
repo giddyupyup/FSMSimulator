@@ -21,7 +21,7 @@ public abstract class Characters {
 		return this.regexId;
 	}
 
-	public Specials getSpecialChar() {
+	public Specials getSpecials() {
 		return null;
 	}
 
@@ -43,7 +43,7 @@ public abstract class Characters {
 		}
 
 		@Override
-		public Specials getSpecialChar() {
+		public Specials getSpecials() {
 			return this.specialChar;
 		}
 	}
