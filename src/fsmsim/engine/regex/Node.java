@@ -15,32 +15,36 @@ public abstract class Node {
 		return null;
 	}
 
+	public List<Node> getNodeList() {
+		return null;
+	}
+
 	public static class AltNode extends Node {
-		private Node node;
+		private List<Node> node;
 
 		public AltNode(final NodeType nodeType,
-					   final Node node) {
+					   final List<Node> node) {
 			super(nodeType);
 			this.node = node;
 		}
 
 		@Override
-		public Node getNode() {
+		public List<Node> getNode() {
 			return this.node;
 		}
 	}
 
 	public static class SeqNode extends Node {
-		private Node node;
+		private List<Node> node;
 
 		public SeqNode(final NodeType nodeType,
-					   final Node node) {
+					   final List<Node> node) {
 			super(nodeType);
 			this.node = node;
 		}
 
 		@Override
-		public Node getNode() {
+		public List<Node> getNode() {
 			return this.node;
 		}
 	}
@@ -79,11 +83,18 @@ public abstract class Node {
 		}
 	}
 
+	public static class InvalidNode extends Node {
+		public InvalidNode() {
+			super(NodeType.INVALID);
+		}
+	}
+
 	public enum NodeType {
 		LIT,
 		ALT,
 		KSTAR,
 		SEQ,
-		EPS
+		EPS,
+		INVALID
 	}
 }
