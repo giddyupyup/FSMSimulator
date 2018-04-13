@@ -1,5 +1,7 @@
 package fsmsim.engine.regex;
 
+import java.util.List;
+
 public abstract class Node {
 	private final NodeType nodeType;
 
@@ -22,9 +24,8 @@ public abstract class Node {
 	public static class AltNode extends Node {
 		private List<Node> node;
 
-		public AltNode(final NodeType nodeType,
-					   final List<Node> node) {
-			super(nodeType);
+		public AltNode(final List<Node> node) {
+			super(NodeType.UNION);
 			this.node = node;
 		}
 
@@ -37,9 +38,8 @@ public abstract class Node {
 	public static class SeqNode extends Node {
 		private List<Node> node;
 
-		public SeqNode(final NodeType nodeType,
-					   final List<Node> node) {
-			super(nodeType);
+		public SeqNode(final List<Node> node) {
+			super(NodeType.SEQ);
 			this.node = node;
 		}
 
@@ -52,9 +52,8 @@ public abstract class Node {
 	public static class KStarNode extends Node {
 		private Node node;
 
-		public KStarNode(final NodeType nodeType,
-						 final Node node) {
-			super(nodeType);
+		public KStarNode(final Node node) {
+			super(NodeType.KSTAR);
 			this.node = node;
 		}
 
@@ -65,21 +64,28 @@ public abstract class Node {
 	}
 
 	public static class LitNode extends Node {
-		private String alphabet;
+		private String symbol;
 
-		public LitNode(final NodeType nodeType,
-					   final String alphabet) {
-			super(nodeType);
-			this.alphabet = alphabet;
+		public LitNode(final String symbol) {
+			super(NodeType.SYMBOL);
+			this.symbol = symbol;
+		}
+
+		public String getLiteral() {
+			return this.symbol;
 		}
 	}
 
 	public static class EpsNode extends Node {
-		private String emptyString;
+		private String symbol;
 
-		public LitNode(final NodeType nodeType) {
-			super(nodeType);
-			this.emptyString = "$";
+		public EpsNode() {
+			super(NodeType.EPS);
+			this.symbol = "$";
+		}
+
+		public String getLiteral() {
+			return this.symbol;
 		}
 	}
 
@@ -90,8 +96,8 @@ public abstract class Node {
 	}
 
 	public enum NodeType {
-		LIT,
-		ALT,
+		SYMBOL,
+		UNION,
 		KSTAR,
 		SEQ,
 		EPS,

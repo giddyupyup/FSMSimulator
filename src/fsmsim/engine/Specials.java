@@ -7,14 +7,14 @@ public enum Specials {
 		this.specialChar = specialChar;
 	}
 
-	ALT("+") {
+	UNION("+") {
 		@Override
 		public String toString() {
 			return this.specialChar;
 		}
 
 		@Override
-		public boolean isAlt() {
+		public boolean isUnion() {
 			return true;
 		}
 
@@ -46,7 +46,7 @@ public enum Specials {
 		}
 
 		@Override
-		public boolean isAlt() {
+		public boolean isUnion() {
 			return false;
 		}
 
@@ -78,7 +78,7 @@ public enum Specials {
 		}
 
 		@Override
-		public boolean isAlt() {
+		public boolean isUnion() {
 			return false;
 		}
 
@@ -110,7 +110,7 @@ public enum Specials {
 		}
 
 		@Override
-		public boolean isAlt() {
+		public boolean isUnion() {
 			return false;
 		}
 
@@ -142,7 +142,7 @@ public enum Specials {
 		}
 
 		@Override
-		public boolean isAlt() {
+		public boolean isUnion() {
 			return false;
 		}
 
@@ -167,7 +167,7 @@ public enum Specials {
 		}
 	};
 
-	public abstract boolean isAlt();
+	public abstract boolean isUnion();
 	public abstract boolean isKleeneStar();
 	public abstract boolean isLeftParen();
 	public abstract boolean isRightParen();

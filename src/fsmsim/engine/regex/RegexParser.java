@@ -20,7 +20,7 @@ public class RegexParser implements Parser {
 				case "$" : literal = new SpecialLiterals(Specials.EMPTY_STRING,
 														 parseString.charAt(i),
 														 i); break;
-				case "+" : literal = new SpecialLiterals(Specials.ALT,
+				case "+" : literal = new SpecialLiterals(Specials.UNION,
 														 parseString.charAt(i),
 														 i); break;
 				case "*" : literal = new SpecialLiterals(Specials.KLEENE_STAR,

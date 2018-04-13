@@ -5,18 +5,26 @@ import java.util.List;
 public final class Lexer {
 
 	private final List<Characters> parseRegex;
-	private int currentChar;
+	private int currentIdx;
 
 	public Lexer(final List<Characters> parseRegex) {
 		this.parseRegex = parseRegex;
-		this.currentChar = 0;
+		this.currentIdx = 0;
 	}
 
 	public Characters peek() {
-		return this.parseRegex.get(this.currentChar);
+		return this.parseRegex.get(this.currentIdx);
 	}
 
 	public void advance() {
-		this.currentChar++;
+		this.currentIdx++;
+	}
+
+	public int getCurrentIdx() {
+		return this.currentIdx;
+	}
+
+	public List<Characters> getParseRegex() {
+		return this.parseRegex;
 	}
 }
