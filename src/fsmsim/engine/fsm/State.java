@@ -1,25 +1,44 @@
 package fsmsim.engine.fsm;
 
 public class State {
-	private boolean initialState;
-	private boolean lastState;
+	final private boolean initialState;
+	final private boolean lastState;
+	final private int stateNumber;
+	final private String symbol;
 	private List<Integer> toStates;
-	private int fromState;
-	private int stateNumber;
-	private String symbol;
+	private List<Integer> fromStates;
 
-	public State(final boolean initialState,
-				 final boolean lastState,
+	public State(final int stateNumber,
+				 final List<Integer> fromStates,
 				 final List<Integer> toStates,
-				 final int fromState,
-				 final int stateNumber,
 				 final String symbol) {
-		this.initialState = initialState;
-		this.lastState = lastState;
+		this.initialState = false;
+		this.lastState = false;
 		this.toStates = toStates;
-		this.fromState = fromState;
+		this.fromStates = fromStates;
 		this.stateNumber = stateNumber;
 		this.symbol = symbol;
+	}
+
+	public State(final int stateNumber,
+				 final List<Integer> toStates,
+				 final String symbol) {
+		this.initialState = true;
+		this.lastState = false;
+		this.toStates = toStates;
+		this.fromStates = null;
+		this.stateNumber = stateNumber;
+		this.symbol = symbol;
+	}
+
+	public State(final int stateNumber,
+				 final List<Integer> fromStates) {
+		this.initialState = false;
+		this.lastState = true;
+		this.toStates = null;
+		this.fromStates = fromStates;
+		this.stateNumber = stateNumber;
+		this.symbol = null;
 	}
 
 	public boolean isInitialState() {
@@ -34,8 +53,8 @@ public class State {
 		return this.toStates;
 	}
 
-	public int getFromState() {
-		return this.fromState;
+	public List<Integer> getfromStates() {
+		return this.fromStates;
 	}
 
 	public List<Integer> toStates() {
@@ -48,5 +67,19 @@ public class State {
 
 	public String getSymbol() {
 		return this.symbol;
+	}
+
+	public void addToStates(final int state) {
+		this.toStates.add(state);
+	}
+
+	public void addFromStates(final int state) {
+		this.fromStates.add(state);
+	}
+
+	public enum StateType {
+		INITIAL,
+		COMMON,
+		LAST
 	}
 }

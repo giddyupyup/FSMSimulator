@@ -22,7 +22,7 @@ public class Tree {
 		this.validateTree = true;
 	}
 
-	public Node getNode() {
+	public Node getParseNode() {
 		return this.node;
 	}
 

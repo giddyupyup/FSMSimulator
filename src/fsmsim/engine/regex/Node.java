@@ -96,11 +96,204 @@ public abstract class Node {
 	}
 
 	public enum NodeType {
-		SYMBOL,
-		UNION,
-		KSTAR,
-		SEQ,
-		EPS,
-		INVALID
+		SYMBOL {
+			@Override
+			public boolean isUnion() {
+				return false;
+			}
+
+			@Override
+			public boolean isKStar() {
+				return false;
+			}
+
+			@Override
+			public boolean isSeq() {
+				return false;
+			}
+
+			@Override
+			public boolean isSymbol() {
+				return true;
+			}
+
+			@Override
+			public boolean isEmptyString() {
+				return false;
+			}
+
+			@Override
+			public boolean isInvalid() {
+				return false;
+			}
+		},
+
+		UNION {
+			@Override
+			public boolean isUnion() {
+				return true;
+			}
+
+			@Override
+			public boolean isKStar() {
+				return false;
+			}
+
+			@Override
+			public boolean isSeq() {
+				return false;
+			}
+
+			@Override
+			public boolean isSymbol() {
+				return false;
+			}
+
+			@Override
+			public boolean isEmptyString() {
+				return false;
+			}
+
+			@Override
+			public boolean isInvalid() {
+				return false;
+			}
+
+		},
+
+		KSTAR {
+			@Override
+			public boolean isUnion() {
+				return false;
+			}
+
+			@Override
+			public boolean isKStar() {
+				return true;
+			}
+
+			@Override
+			public boolean isSeq() {
+				return false;
+			}
+
+			@Override
+			public boolean isSymbol() {
+				return false;
+			}
+
+			@Override
+			public boolean isEmptyString() {
+				return false;
+			}
+
+			@Override
+			public boolean isInvalid() {
+				return false;
+			}
+		},
+
+		SEQ {
+			@Override
+			public boolean isUnion() {
+				return false;
+			}
+
+			@Override
+			public boolean isKStar() {
+				return false;
+			}
+
+			@Override
+			public boolean isSeq() {
+				return true;
+			}
+
+			@Override
+			public boolean isSymbol() {
+				return false;
+			}
+
+			@Override
+			public boolean isEmptyString() {
+				return false;
+			}
+
+			@Override
+			public boolean isInvalid() {
+				return false;
+			}
+		},
+
+		EPS {
+			@Override
+			public boolean isUnion() {
+				return false;
+			}
+
+			@Override
+			public boolean isKStar() {
+				return false;
+			}
+
+			@Override
+			public boolean isSeq() {
+				return false;
+			}
+
+			@Override
+			public boolean isSymbol() {
+				return false;
+			}
+
+			@Override
+			public boolean isEmptyString() {
+				return true;
+			}
+
+			@Override
+			public boolean isInvalid() {
+				return false;
+			}
+		},
+
+		INVALID {
+			@Override
+			public boolean isUnion() {
+				return false;
+			}
+
+			@Override
+			public boolean isKStar() {
+				return false;
+			}
+
+			@Override
+			public boolean isSeq() {
+				return false;
+			}
+
+			@Override
+			public boolean isSymbol() {
+				return false;
+			}
+
+			@Override
+			public boolean isEmptyString() {
+				return false;
+			}
+
+			@Override
+			public boolean isInvalid() {
+				return true;
+			}
+		};
+
+		public abstract boolean isUnion();
+		public abstract boolean isKStar();
+		public abstract boolean isSeq();
+		public abstract boolean isSymbol();
+		public abstract boolean isEmptyString();
+		public abstract boolean isInvalid();
 	}
 }
