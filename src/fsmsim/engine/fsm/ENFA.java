@@ -36,7 +36,7 @@ public class ENFA implements FSM {
 		this.advanceCurrentState();
 		for(final Node node : this.regexTree.getNode().getNodeList()) { //creates the upper union transition
 			final State initState = this.getState(0);
-			initState.add(this.getCurrentState());
+			initState.addToStates(this.getCurrentState());
 			this.createStates(initState.getStateNumber(), node);
 		}
 	}
@@ -81,10 +81,21 @@ public class ENFA implements FSM {
 		}
 
 		if(node.getNodeType().isUnion()) { //creates the inner union transition states
+			final int currentState = this.getCurrentState();
+			final List<State> toStates = new ArrayList<>();
+			toStates.add(currentState + 1);
 			final List<Integer> fromStates = new ArrayList<>();
-			fromStates.add(this.getCurrentState());
+			fromStates.add(fromStates);
+			this.getStates().add(this.addState(StateType.COMMON,
+											   currentState,
+											   fromStates,
+											   toStates,
+											   Specials.EMPTY_STRING.toString()));
+			this.advanceCurrentState();
 			for(final Node innerNode : node.getNodeList()) {
-				this.createStates(fromStates, innerNode);
+				final State innerState = this.getState(currentState);
+				innerState.addToStates(this.getCurrentState());
+				this.createStates(innerState.getStateNumber(), innerNode);
 			}
 
 		}
@@ -98,12 +109,14 @@ public class ENFA implements FSM {
 		}
 	}
 
-	private void kStarTransitionStates(final Node node) {
+	private void kStarTransitionStates(final List<Integer> fromStates,
+									   final Node node) {
 		
 	}
 
-	private void createSymbolStates(final Node node) {
-
+	private void createSymbolStates(final List<Integer> fromStates,
+									final Node node) {
+		this.
 	}
 
 	private State addState(final StateType stateType,
