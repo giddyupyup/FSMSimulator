@@ -5,6 +5,7 @@ import fsmsim.engine.regex.Tree;
 import fsmsim.engine.fsm.State.StateType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ENFA implements FSM {
@@ -27,18 +28,25 @@ public class ENFA implements FSM {
 	@Override
 	public void create() {
 		final List<Integer> toStates = new ArrayList<>();
-		toStates.add(this.getCurrentState() + 1);
+		final List<Integer> fromStates = new ArrayList<>();
 		this.getStates().add(this.addState(StateType.INITIAL,
-										   this.getCurrentState()
+										   this.getCurrentState(),
 										   null,
-										   new ArrayList<>(),
+										   toStates,
 										   Specials.EMPTY_STRING.toString()));
 		this.advanceCurrentState();
+		final State initState = this.getState(0);
 		for(final Node node : this.regexTree.getNode().getNodeList()) { //creates the upper union transition
-			final State initState = this.getState(0);
 			initState.addToStates(this.getCurrentState());
 			this.createStates(initState.getStateNumber(), node);
+			fromStates.add(this.getCurrentState() - 1);
 		}
+
+		this.getStates().add(this.addState(StateType.LAST,
+										   this.getCurrentState(),
+										   fromStates,
+										   null,
+										   null));
 	}
 
 	public List<State> getStates() {
@@ -74,6 +82,16 @@ public class ENFA implements FSM {
 
 	private void createStates(final List<Integer> fromStates,
 							  final Node node) {
+		if(node.getNodeType().isSymbol() || node.getNodeType().isEmptyString()) {
+			this.createSymbolStates(fromStates, node);
+			return;
+		}
+
+		if(node.getNodeType().isKStar()) {
+			this.kStarTransitionStates(fromStates, node);
+			return;
+		}
+
 		if(node.getNodeType().isSeq()) {
 			for(final Node innerNode : node.getNodeList()) {
 				this.createStates(fromStates, innerNode);
@@ -82,41 +100,128 @@ public class ENFA implements FSM {
 
 		if(node.getNodeType().isUnion()) { //creates the inner union transition states
 			final int currentState = this.getCurrentState();
-			final List<State> toStates = new ArrayList<>();
-			toStates.add(currentState + 1);
-			final List<Integer> fromStates = new ArrayList<>();
-			fromStates.add(fromStates);
+			final List<Integer> toStates = new ArrayList<>();
+			final List<Integer> _fromStates = new ArrayList<>();
 			this.getStates().add(this.addState(StateType.COMMON,
 											   currentState,
 											   fromStates,
 											   toStates,
 											   Specials.EMPTY_STRING.toString()));
 			this.advanceCurrentState();
+			final State innerState = this.getState(currentState);
 			for(final Node innerNode : node.getNodeList()) {
-				final State innerState = this.getState(currentState);
 				innerState.addToStates(this.getCurrentState());
 				this.createStates(innerState.getStateNumber(), innerNode);
+				_fromStates.add(this.getCurrentState() - 1);
 			}
 
-		}
-
-		if(node.getNodeType().isKStar()) {
-			this.kStarTransitionStates(fromStates, node);
-		}
-
-		if(node.getNodeType().isSymbol()) {
-			this.createSymbolStates(fromStates, node);
+			toStates.clear();
+			toStates.add(this.getCurrentState() + 1);
+			this.getStates().add(this.addState(StateType.COMMON,
+											   this.getCurrentState(),
+											   _fromStates,
+											   toStates,
+											   Specials.EMPTY_STRING.toString()));
+			this.advanceCurrentState();
 		}
 	}
 
 	private void kStarTransitionStates(final List<Integer> fromStates,
 									   final Node node) {
-		
+		final List<Integer> toStates = new ArrayList<>();
+		final List<Integer> fStates = new ArrayList<>();
+		final State firstState;
+		final State secondState;
+
+		//create the first state
+		toStates.add(this.getCurrentState() + 1);
+		toStates.add(this.getCurrentState() + 3);
+		fStates.addAll(fromStates);
+		this.getStates().add(this.addState(StateType.COMMON,
+										   this.getCurrentState(),
+										   fStates,
+										   toStates,
+										   Specials.EMPTY_STRING.toString()));
+		firstState = this.getState(this.getCurrentState());
+		this.advanceCurrentState();
+		toStates.clear();
+		fStates.clear();
+
+		//create the second state
+		if(node.getNodeType().isSymbol() || node.getNodeType().isEmptyString()) {
+			toStates.add(this.getCurrentState() + 1);
+			fStates.add(this.getCurrentState() - 1);
+			this.getStates().add(this.addState(StateType.COMMON,
+											   this.getCurrentState(),
+											   fStates,
+											   toStates,
+											   node.getLiteral()));
+			secondState = this.getState(this.getCurrentState());
+			this.advanceCurrentState();
+		} else {
+			toStates.add(this.getCurrentState() + 1);
+			fStates.add(this.getCurrentState() - 1);
+			this.getStates().add(this.addState(StateType.COMMON,
+											   this.getCurrentState(),
+											   fStates,
+											   toStates,
+											   Specials.EMPTY_STRING.toString()));
+			secondState = this.getState(this.getCurrentState());
+			this.advanceCurrentState();
+			final List<Integer> _fStates = new ArrayList<>();
+			_fStates.add(this.getCurrentState() - 1);
+			this.createStates(_fStates, node.getNode());
+		}
+
+		secondState.addFromStates(this.getCurrentState());
+		toStates.clear();
+		fStates.clear();
+
+		//create the third state
+		toStates.add(this.getCurrentState() + 1);
+		toStates.add(secondState.getStateNumber());
+		fStates.add(this.getCurrentState() - 1);
+		this.getStates().add(this.addState(StateType.COMMON,
+										   this.getCurrentState(),
+										   fStates,
+										   toStates,
+										   Specials.EMPTY_STRING.toString()));
+		this.advanceCurrentState();
+		toStates.clear();
+		fStates.clear();
+
+		//create the last state
+		toStates.add(this.getCurrentState() + 1);
+		fStates.add(this.getCurrentState() - 1);
+		fStates.add(firstState.getStateNumber());
+		this.getStates().add(this.addState(StateType.COMMON,
+										   this.getCurrentState(),
+										   fStates,
+										   toStates,
+										   Specials.EMPTY_STRING.toString()));
+		this.advanceCurrentState();
 	}
 
 	private void createSymbolStates(final List<Integer> fromStates,
 									final Node node) {
-		this.
+		final List<Integer> toStates = new ArrayList<>();
+		toStates.add(this.getCurrentState() + 1);
+		this.getStates().add(this.addState(StateType.COMMON,
+										   this.getCurrentState(),
+										   fromStates,
+										   toStates,
+										   node.getLiteral()));
+		this.advanceCurrentState();
+		final List<Integer> fStates = new ArrayList<>();
+		fStates.add(this.getCurrentState() - 1);
+		toStates.clear();
+		toStates.add(this.getCurrentState() + 1);
+		this.getStates().add(this.addState(StateType.COMMON,
+										   this.getCurrentState(),
+										   fStates,
+										   toStates,
+										   Specials.EMPTY_STRING.toString()));
+		this.advanceCurrentState();
 	}
 
 	private State addState(final StateType stateType,
