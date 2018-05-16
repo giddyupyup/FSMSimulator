@@ -1,6 +1,7 @@
-package fsmsim.regex;
+package fsmsim.engine.regex;
 
 import fsmsim.engine.Specials;
+import fsmsim.engine.regex.Characters.*;
 
 import com.google.common.collect.ImmutableList;
 
@@ -16,23 +17,23 @@ public class RegexParser implements Parser {
 
 		for(int i = 0; i < parseString.length(); i++) {
 			Characters literal;
-			switch(parseString.charAt(i)) {
+			switch(Character.toString(parseString.charAt(i))) {
 				case "$" : literal = new SpecialLiterals(Specials.EMPTY_STRING,
-														 parseString.charAt(i),
+														 Character.toString(parseString.charAt(i)),
 														 i); break;
 				case "+" : literal = new SpecialLiterals(Specials.UNION,
-														 parseString.charAt(i),
+														 Character.toString(parseString.charAt(i)),
 														 i); break;
 				case "*" : literal = new SpecialLiterals(Specials.KLEENE_STAR,
-														 parseString.charAt(i),
+														 Character.toString(parseString.charAt(i)),
 														 i); break;
 				case "(" : literal = new SpecialLiterals(Specials.LEFT_PAREN,
-														 parseString.charAt(i),
+														 Character.toString(parseString.charAt(i)),
 														 i); break;
 				case ")" : literal = new SpecialLiterals(Specials.RIGHT_PAREN,
-														 parseString.charAt(i),
+														 Character.toString(parseString.charAt(i)),
 														 i); break;
-				default : literal = new Literals(parseString.charAt(i), i); break;
+				default : literal = new Literals(Character.toString(parseString.charAt(i)), i); break;
 			}
 			literals.add(literal);
 		}

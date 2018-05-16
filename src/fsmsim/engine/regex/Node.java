@@ -21,6 +21,10 @@ public abstract class Node {
 		return null;
 	}
 
+	public String getLiteral() {
+		return null;
+	}
+
 	public static class AltNode extends Node {
 		private List<Node> node;
 
@@ -30,7 +34,7 @@ public abstract class Node {
 		}
 
 		@Override
-		public List<Node> getNode() {
+		public List<Node> getNodeList() {
 			return this.node;
 		}
 	}
@@ -44,7 +48,7 @@ public abstract class Node {
 		}
 
 		@Override
-		public List<Node> getNode() {
+		public List<Node> getNodeList() {
 			return this.node;
 		}
 	}
@@ -71,6 +75,7 @@ public abstract class Node {
 			this.symbol = symbol;
 		}
 
+		@Override
 		public String getLiteral() {
 			return this.symbol;
 		}
@@ -84,6 +89,7 @@ public abstract class Node {
 			this.symbol = "$";
 		}
 
+		@Override
 		public String getLiteral() {
 			return this.symbol;
 		}

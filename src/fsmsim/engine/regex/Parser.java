@@ -1,4 +1,4 @@
-package fsmsim.model.regex;
+package fsmsim.engine.regex;
 
 import java.util.List;
 

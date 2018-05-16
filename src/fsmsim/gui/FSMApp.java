@@ -1,5 +1,7 @@
 package fsmsim.gui;
 
+import fsmsim.gui.panel.MainPanel;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -10,7 +12,7 @@ public class FSMApp extends Application {
 		stage.setTitle("FSMSimulator");
 		stage.setResizable(false);
 		stage.sizeToScene();
-		stage.setScene(/* class for the whole app*/);
+		stage.setScene(MainPanel.get());
 		stage.show();
 	}
 }

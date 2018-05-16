@@ -1,6 +1,6 @@
 package fsmsim.engine.regex;
 
-import fsmsim.engine.Specials
+import fsmsim.engine.Specials;
 
 public abstract class Characters {
 
@@ -35,7 +35,7 @@ public abstract class Characters {
 	public static final class SpecialLiterals extends Characters {
 		final Specials specialChar;
 
-		public SpecialLiterals(final Special specialChar,
+		public SpecialLiterals(final Specials specialChar,
 						       final String regexChar,
 							   final int regexId) {
 			super(regexChar, regexId);

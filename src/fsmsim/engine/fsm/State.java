@@ -1,5 +1,8 @@
 package fsmsim.engine.fsm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class State {
 	final private boolean initialState;
 	final private boolean lastState;
@@ -53,7 +56,7 @@ public class State {
 		return this.toStates;
 	}
 
-	public List<Integer> getfromStates() {
+	public List<Integer> getFromStates() {
 		return this.fromStates;
 	}
 

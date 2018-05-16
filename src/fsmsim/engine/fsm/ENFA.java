@@ -2,6 +2,7 @@ package fsmsim.engine.fsm;
 
 import fsmsim.engine.Specials;
 import fsmsim.engine.regex.Tree;
+import fsmsim.engine.regex.Node;
 import fsmsim.engine.fsm.State.StateType;
 
 import java.util.ArrayList;
@@ -36,9 +37,11 @@ public class ENFA implements FSM {
 										   Specials.EMPTY_STRING.toString()));
 		this.advanceCurrentState();
 		final State initState = this.getState(0);
-		for(final Node node : this.regexTree.getNode().getNodeList()) { //creates the upper union transition
+		for(final Node node : this.regexTree.getParseNode().getNodeList()) { //creates the upper union transition
 			initState.addToStates(this.getCurrentState());
-			this.createStates(initState.getStateNumber(), node);
+			final List<Integer> _initFromStates = new ArrayList<>();
+			_initFromStates.add(initState.getStateNumber());
+			this.createStates(_initFromStates, node);
 			fromStates.add(this.getCurrentState() - 1);
 		}
 
@@ -111,7 +114,9 @@ public class ENFA implements FSM {
 			final State innerState = this.getState(currentState);
 			for(final Node innerNode : node.getNodeList()) {
 				innerState.addToStates(this.getCurrentState());
-				this.createStates(innerState.getStateNumber(), innerNode);
+				final List<Integer> _innerFromStates = new ArrayList<>();
+				_innerFromStates.add(innerState.getStateNumber());
+				this.createStates(_innerFromStates, innerNode);
 				_fromStates.add(this.getCurrentState() - 1);
 			}
 
@@ -226,8 +231,8 @@ public class ENFA implements FSM {
 
 	private State addState(final StateType stateType,
 						   final int currentState,
-						   final List<State> fromStates,
-						   final List<State> toStates,
+						   final List<Integer> fromStates,
+						   final List<Integer> toStates,
 						   final String symbol) {
 		final State createState;
 
@@ -248,7 +253,7 @@ public class ENFA implements FSM {
 	}
 
 	private State promoteState(final State state,
-							   final int toStates,
+							   final List<Integer> toStates,
 							   final String symbol) {
 		return new State(state.getStateNumber(), state.getFromStates(), toStates, symbol);
 	}

@@ -1,17 +1,7 @@
 package fsmsim.engine;
 
 public enum Specials {
-	private final String specialChar;
-
-	Specials(final String specialChar) {
-		this.specialChar = specialChar;
-	}
-
 	UNION("+") {
-		@Override
-		public String toString() {
-			return this.specialChar;
-		}
 
 		@Override
 		public boolean isUnion() {
@@ -41,11 +31,6 @@ public enum Specials {
 
 	KLEENE_STAR("*") {
 		@Override
-		public String toString() {
-			return this.specialChar;
-		}
-
-		@Override
 		public boolean isUnion() {
 			return false;
 		}
@@ -72,11 +57,6 @@ public enum Specials {
 	},
 
 	LEFT_PAREN("(") {
-		@Override
-		public String toString() {
-			return this.specialChar;
-		}
-
 		@Override
 		public boolean isUnion() {
 			return false;
@@ -105,11 +85,6 @@ public enum Specials {
 
 	RIGHT_PAREN(")") {
 		@Override
-		public String toString() {
-			return this.specialChar;
-		}
-
-		@Override
 		public boolean isUnion() {
 			return false;
 		}
@@ -137,11 +112,6 @@ public enum Specials {
 
 	EMPTY_STRING("$") {
 		@Override
-		public String toString() {
-			return this.specialChar;
-		}
-
-		@Override
 		public boolean isUnion() {
 			return false;
 		}
@@ -166,6 +136,17 @@ public enum Specials {
 			return true;
 		}
 	};
+
+	private final String specialChar;
+
+	Specials(final String specialChar) {
+		this.specialChar = specialChar;
+	}
+
+	@Override
+	public String toString() {
+		return this.specialChar;
+	}
 
 	public abstract boolean isUnion();
 	public abstract boolean isKleeneStar();

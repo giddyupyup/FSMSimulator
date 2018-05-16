@@ -7,6 +7,7 @@ import fsmsim.engine.regex.Node.KStarNode;
 import fsmsim.engine.regex.Node.SeqNode;
 import fsmsim.engine.regex.Node.LitNode;
 import fsmsim.engine.regex.Node.EpsNode;
+import fsmsim.engine.regex.Node.InvalidNode;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class Tree {
 		Node node;
 
 		while(true) {
-			node - this.parseSeq(lexer);
+			node = this.parseSeq(lexer);
 			if(node.getNodeType() == NodeType.INVALID) {
 				this.validateTree = false;
 				return new InvalidNode();
@@ -72,12 +73,12 @@ public class Tree {
 	private Node parseKStar(final Lexer lexer) {
 		Node node = this.parseLexer(lexer);
 
-		if(node.getNodeType == NodeType.INVALID) {
+		if(node.getNodeType() == NodeType.INVALID) {
 			this.validateTree = false;
 			return new InvalidNode();
 		}
 
-		if(lexer.peek().getSpecials().isKleenStar()) {
+		if(lexer.peek().getSpecials().isKleeneStar()) {
 			lexer.advance();
 			node = new KStarNode(node);
 		}
@@ -96,12 +97,12 @@ public class Tree {
 			return node;
 		} else if(lexer.peek().getSpecials().isEmptyString()) {
 			lexer.advance();
-			return new EpsNode(NodeType.EPS);
+			return new EpsNode();
 		} else if(lexer.peek().getSpecials().isUnion() ||
 				  lexer.peek().getSpecials().isRightParen() ||
-				  lexer.currentIdx() == lexer.getParseRegex().size()) {
+				  lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
 			return null;
-		} else if(lexer.peek().getSpecials().isKleenStar()) {
+		} else if(lexer.peek().getSpecials().isKleeneStar()) {
 			this.validateTree = false;
 			return new InvalidNode();
 		} else {
