@@ -4,7 +4,7 @@ import javafx.scene.layout.BorderPane;
 
 public class FSMContainer extends BorderPane {
 
-	FSMContainer() {
-		super();
-	}
+    FSMContainer() {
+        super();
+    }
 }
