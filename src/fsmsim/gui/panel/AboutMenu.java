@@ -7,7 +7,7 @@ import javafx.stage.Modality;
 import javafx.scene.Scene;
 import javafx.scene.Group;
 import javafx.scene.Cursor;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -29,7 +29,7 @@ public class AboutMenu extends Stage {
 
     public static class About extends BorderPane {
         private final Group closeButton = new Group();
-        private final Pane about = new Pane();
+        private final VBox about = new VBox();
 
         public About(final Stage stage) {
             this.setStyle("-fx-background-color: #ECEAEA; -fx-border-color: #000; -fx-border-width: 1;");
@@ -70,19 +70,30 @@ public class AboutMenu extends Stage {
             this.closeButton.getChildren().addAll(circleBtn, line1, line2);
         }
 
-        private static final String ABOUTWORD = 
+        private static final String ABOUTTITLE = 
             "Finite State Machine Simulator\n" + 
-            "(Regex String to eNFA conversion)\n\n" +
+            "(Regex String to eNFA conversion)\n\n";
+
+        private static final String ABOUTAUTHOR = 
             "Created by: Gilbert M. Arces\n" +
             "SY: 2017 -2018\n" +
             "Visayas State University";
 
         private void createAbout() {
-            final Label aboutLabel = new Label(ABOUTWORD);
-            aboutLabel.setTextFill(Color.BLACK);
-            aboutLabel.setTextAlignment(TextAlignment.CENTER);
-            aboutLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Trebuchet MS, Helvetica, sans-serif;");
-            this.about.getChildren().add(aboutLabel);
+            final Label aboutTitle = new Label(ABOUTTITLE);
+            aboutTitle.setTextFill(Color.BLACK);
+            aboutTitle.setTextAlignment(TextAlignment.CENTER);
+            aboutTitle.setAlignment(Pos.CENTER);
+            aboutTitle.setStyle("-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Trebuchet MS, Helvetica, sans-serif;");
+
+            final Label aboutAuthor = new Label(ABOUTAUTHOR);
+            aboutAuthor.setTextFill(Color.BLACK);
+            aboutAuthor.setTextAlignment(TextAlignment.CENTER);
+            aboutAuthor.setAlignment(Pos.CENTER);
+            aboutAuthor.setStyle("-fx-font-size: 20; -fx-font-family: Trebuchet MS, Helvetica, sans-serif;");
+            this.about.setSpacing(20);
+            this.about.setAlignment(Pos.CENTER);
+            this.about.getChildren().addAll(aboutTitle, aboutAuthor);
         }
     }
 }

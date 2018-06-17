@@ -11,9 +11,8 @@ public class FSMApp extends Application {
     @Override
     public void start(final Stage stage) throws Exception {
         stage.setTitle("FSMSimulator");
-        stage.setResizable(true);
+        stage.setResizable(false);
         stage.setScene(MainPanel.get());
-        stage.setMaximized(true);
         stage.show();
     }
 }

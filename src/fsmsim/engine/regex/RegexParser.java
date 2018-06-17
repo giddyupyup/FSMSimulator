@@ -11,8 +11,11 @@ import java.util.List;
 public class RegexParser implements Parser {
 
     @Override
-    public List<Characters> parse(final String parseString) {
+    public Lexer parse(final String parseString) {
+        return new Lexer(this.createLiterals(parseString));
+    }
 
+    private List<Characters> createLiterals(final String parseString) {
         final List<Characters> literals = new ArrayList<>();
 
         for(int i = 0; i < parseString.length(); i++) {
@@ -40,5 +43,4 @@ public class RegexParser implements Parser {
 
         return ImmutableList.copyOf(literals);
     }
-
 }

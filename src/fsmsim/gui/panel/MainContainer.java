@@ -14,7 +14,6 @@ public class MainContainer extends BorderPane {
 		final AboutContainer aboutContainer = new AboutContainer();
 		this.setTop(aboutContainer);
 		BorderPane.setAlignment(aboutContainer, Pos.CENTER_RIGHT);
-		// BorderPane.setMargin(aboutContainer, new Insets(0, 20, 0, 20));
 		this.setCenter(new FSMContainer());
 	}
 }
