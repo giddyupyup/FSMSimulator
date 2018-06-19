@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.input.KeyCode;
 
 public class FSMContainer extends HBox {
 	private final Label enterLabel = new Label("Enter Regular Expression");
@@ -34,15 +35,18 @@ public class FSMContainer extends HBox {
     }
 
     private void activateUserInputValidation(final TextField userInput) {
-    	userInput.setOnKeyTyped(event -> {
-    		System.out.println(userInput.getText());
-    		final RegexParser regex = new RegexParser();
-    		final Tree regexTree = new Tree(regex.parse(userInput.getText()));
+    	userInput.setOnKeyReleased(event -> {
+            if(event.getCode() != KeyCode.SHIFT) {
+                System.out.println(userInput.getText());
+                final RegexParser regex = new RegexParser();
+                final Tree regexTree = new Tree(regex.parse(userInput.getText()));
+                
+                System.out.println(regexTree.getParseNode().getNodeType());
+                System.out.println(regexTree.validate());
+                System.out.println(regexTree.validate());
+                System.out.println(regexTree.validate());
+            }
     		
-    		System.out.println(regexTree.getParseNode().getNodeType());
-    		System.out.println(regexTree.validate());
-    		System.out.println(regexTree.validate());
-    		System.out.println(regexTree.validate());
 
     	});
     }
