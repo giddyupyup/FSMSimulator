@@ -25,6 +25,11 @@ public abstract class Node {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return this.getNodeType().toString();
+    }
+
     public static class AltNode extends Node {
         private List<Node> node;
 
@@ -102,7 +107,7 @@ public abstract class Node {
     }
 
     public enum NodeType {
-        SYMBOL {
+        SYMBOL("SYMBOL") {
             @Override
             public boolean isUnion() {
                 return false;
@@ -134,7 +139,7 @@ public abstract class Node {
             }
         },
 
-        UNION {
+        UNION("UNION (+)") {
             @Override
             public boolean isUnion() {
                 return true;
@@ -167,7 +172,7 @@ public abstract class Node {
 
         },
 
-        KSTAR {
+        KSTAR("KLEENE STAR (*)") {
             @Override
             public boolean isUnion() {
                 return false;
@@ -199,7 +204,7 @@ public abstract class Node {
             }
         },
 
-        SEQ {
+        SEQ("SEQUENCE '()'") {
             @Override
             public boolean isUnion() {
                 return false;
@@ -231,7 +236,7 @@ public abstract class Node {
             }
         },
 
-        EPS {
+        EPS("EMPTY STRING") {
             @Override
             public boolean isUnion() {
                 return false;
@@ -263,7 +268,7 @@ public abstract class Node {
             }
         },
 
-        INVALID {
+        INVALID("INVALID") {
             @Override
             public boolean isUnion() {
                 return false;
@@ -294,6 +299,12 @@ public abstract class Node {
                 return true;
             }
         };
+
+        private final String nodeName;
+
+        NodeType(final String nodeName) {
+            this.nodeName = nodeName;
+        }
 
         public abstract boolean isUnion();
         public abstract boolean isKStar();

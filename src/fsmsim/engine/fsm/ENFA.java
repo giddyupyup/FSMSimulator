@@ -28,6 +28,8 @@ public class ENFA implements FSM {
 
     @Override
     public void create() {
+        System.out.println("Get the parseNode: " + this.regexTree.getParseNode());
+        System.out.println("Get the parseNodeList: " + this.regexTree.getParseNode().getNodeList().isEmpty());
         final List<Integer> toStates = new ArrayList<>();
         final List<Integer> fromStates = new ArrayList<>();
         this.getStates().add(this.addState(StateType.INITIAL,
