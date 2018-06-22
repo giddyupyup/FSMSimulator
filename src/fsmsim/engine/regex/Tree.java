@@ -129,13 +129,14 @@ public class Tree {
             return new InvalidNode();
         }
         System.out.println("CHeck for Seq nodelist: " + nodeList.isEmpty());
+        System.out.println("CHeck for Seq nodelist: " + nodeList);
         return new SeqNode(nodeList);
     }
 
 
     private Node parseKStar(final Lexer lexer) {
         Node node = this.parseLexer(lexer);
-
+        System.out.println("CHeck for Kstar node: " + node);
         if(node != null) {
             if(node.getNodeType().isInvalid()) {
                 node = new InvalidNode();

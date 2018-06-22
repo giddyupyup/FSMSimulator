@@ -27,10 +27,12 @@ public class FSMContainer extends HBox {
     private Label invalidRegex = new Label();
 
     private final RegexParser regex;
+    private final ENFA enfa;
     private static Tree regexTree;
 
     FSMContainer() {
         this.regex = new RegexParser();
+        this.enfa = new ENFA();
         this.enterLabel.setAlignment(Pos.BOTTOM_CENTER);
         this.generateBtn.setAlignment(Pos.CENTER);
         this.generateBtn.setPadding(new Insets(5, 10, 5, 10));
@@ -43,7 +45,7 @@ public class FSMContainer extends HBox {
         final VBox userInputContainer = new VBox();
         userInputContainer.setSpacing(10);
         userInputContainer.getChildren().addAll(this.userInput, this.invalidRegex);
-        this.activateUserInputValidation(this.userInput, this.invalidRegex, this.regex, this.generateBtn);
+        this.activateUserInputValidation(this.userInput, this.invalidRegex, this.regex, this.generateBtn, this.enfa);
         this.setSpacing(15);
         this.setPadding(new Insets(25, 20, 0, 20));
         this.getChildren().addAll(this.enterLabel, userInputContainer, this.generateBtn);
@@ -52,7 +54,8 @@ public class FSMContainer extends HBox {
     private void activateUserInputValidation(final TextField userInput,
                                              final Label invalidRegex,
                                              final RegexParser regex,
-                                             final Button generateBtn) {
+                                             final Button generateBtn,
+                                             final ENFA enfa) {
     	userInput.setOnKeyReleased(event -> {
             if(event.getCode() != KeyCode.SHIFT) {
                 if(userInput.getText() == null || userInput.getText().trim().isEmpty()) {
@@ -68,19 +71,18 @@ public class FSMContainer extends HBox {
                         userInput.setStyle("-fx-border-color: green; -fx-focus-color: green;");
                         invalidRegex.setText("");
                     }
-                    FSMContainer.generateFSM(FSMContainer.regexTree, generateBtn);
+                    FSMContainer.generateFSM(FSMContainer.regexTree, generateBtn, enfa);
                 }
             }
     	});
     }
 
-    private static void generateFSM(final Tree regexTree, final Button generateBtn) {
+    private static void generateFSM(final Tree regexTree, final Button generateBtn, final ENFA enfa) {
         generateBtn.setOnAction(event -> {
             if(regexTree.validate()) {
                 System.out.println("Go generate");
                 System.out.println("Generate nodes: " + regexTree.getParseNode().getNodeList().isEmpty());
-                final ENFA enfa = new ENFA(regexTree);
-                enfa.create();
+                enfa.create(regexTree);
                 System.out.println("Check if there is a states created: " + !enfa.getStates().isEmpty());
                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
                 for(final State state : enfa.getStates()) {
