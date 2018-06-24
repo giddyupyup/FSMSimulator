@@ -36,21 +36,14 @@ public class Tree {
         Node node;
         while(true) {
             node = this.parseSeq(lexer);
-
             if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
                 if(node.getNodeType().isInvalid()) {
-                    System.out.println("Check for invalid node and out of range");
                     return new InvalidNode();
                 } else {
-                    System.out.println("Check for out of range");
-                    System.out.println(node.getNodeType());
                     if(node.getNodeType().isSeq()) {
-                        System.out.println(node.getNodeType());
                         if(!node.getNodeList().isEmpty()) {
-                            System.out.println("Check for adding node");
                             nodeList.add(node);
                         } else {
-                            System.out.println("Check for empty Seq Node");
                             return new InvalidNode();
                         }
                     }
@@ -59,13 +52,19 @@ public class Tree {
                 
             } else {
                 if(node.getNodeType().isInvalid()) {
-                    System.out.println("Check for invalid node");
                     return new InvalidNode();
+                }
+
+                if(node.getNodeType().isSeq()) {
+                    if(!node.getNodeList().isEmpty()) {
+                        nodeList.add(node);
+                    } else {
+                        return new InvalidNode();
+                    }
                 }
 
                 if(lexer.peek().getSpecials() != null &&
                   lexer.peek().getSpecials().isRightParen()) {
-                    System.out.println("Check for right paren node");
                     boolean isLeftParenPresent = false; 
                     for(int i = lexer.getCurrentIdx()-1; i > -1; i--) {
                         if(lexer.getParseRegex().get(i).getSpecials() != null &&
@@ -91,20 +90,9 @@ public class Tree {
                    lexer.peek().getSpecials().isUnion()) {
                     lexer.advance();
                 }
-                System.out.println(node.getNodeType());
-                if(node.getNodeType().isSeq()) {
-                    System.out.println(node.getNodeType());
-                    if(!node.getNodeList().isEmpty()) {
-                        System.out.println("Check for adding node");
-                        nodeList.add(node);
-                    } else {
-                        System.out.println("Check for empty Seq Node");
-                        return new InvalidNode();
-                    }
-                }
             }
         }
-        System.out.println("CHeck for Alt nodelist: " + nodeList.isEmpty());
+
         return new AltNode(nodeList);
     }
 
@@ -128,15 +116,14 @@ public class Tree {
         if(nodeList.isEmpty()) {
             return new InvalidNode();
         }
-        System.out.println("CHeck for Seq nodelist: " + nodeList.isEmpty());
-        System.out.println("CHeck for Seq nodelist: " + nodeList);
+
         return new SeqNode(nodeList);
     }
 
 
     private Node parseKStar(final Lexer lexer) {
         Node node = this.parseLexer(lexer);
-        System.out.println("CHeck for Kstar node: " + node);
+
         if(node != null) {
             if(node.getNodeType().isInvalid()) {
                 node = new InvalidNode();

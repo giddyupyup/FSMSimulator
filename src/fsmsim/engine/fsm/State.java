@@ -80,6 +80,11 @@ public class State {
         this.fromStates.add(state);
     }
 
+    @Override
+    public String toString() {
+        return "STATE - " + this.stateNumber;
+    }
+
     public enum StateType {
         INITIAL,
         COMMON,
