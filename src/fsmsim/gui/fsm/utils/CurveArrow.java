@@ -13,7 +13,8 @@ import javafx.scene.text.FontWeight;
 public class CurveArrow extends Group{
     private static final double ARROW_HEAD_SIZE = 10.0;
     
-    public CurveArrow(final double startX,
+    public CurveArrow(final boolean isUp,
+                      final double startX,
                       final double startY,
                       final double endX,
                       final double endY,
@@ -22,10 +23,10 @@ public class CurveArrow extends Group{
         curve.setStrokeWidth(3);
 
         final double controlX1 = endX / 4;
-        final double controlY1 = (endY / 3) * 2;
+        final double controlY1 = endY - (isUp ? 50 : -50);
 
         final double controlX2 = (endX / 4) * 3;
-        final double controlY2 = (endY / 3) * 2;
+        final double controlY2 = endY - (isUp ? 50 : -50);
 
         curve.getElements().add(new MoveTo(startX, startY));
         curve.getElements().add(new CubicCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
@@ -53,7 +54,13 @@ public class CurveArrow extends Group{
 
         final Label label = new Label(symbol);
         label.setFont(Font.font(null, FontWeight.BOLD, 16));
-        // label.relocate(45, 40);
+
+        final double angle2 = Math.atan2((endY - startY), (endX - startX));
+        final double distance = Math.sqrt(Math.pow((endX - startX), 2) + Math.pow((endY - startY), 2)) / 2;
+
+        final double labelX = startX + (distance * Math.cos(angle2)) - 7;
+        final double labelY = startY + (distance * Math.sin(angle2)) - (isUp ? 40 : -15);
+        label.relocate(labelX, labelY);
 
         this.getChildren().addAll(curve, arrowHead, label);
 
