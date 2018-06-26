@@ -4,6 +4,7 @@ import fsmsim.engine.regex.Tree;
 import fsmsim.engine.regex.RegexParser;
 import fsmsim.engine.fsm.ENFA;
 import fsmsim.engine.fsm.State;
+import fsmsim.gui.fsm.FSMView;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class FSMContainer extends HBox {
         this.userInput.setPromptText("(a+b)*a");
         this.userInput.setMaxSize(400, 12);
         this.invalidRegex.setTextFill(Color.RED);
-        this.invalidRegex.setFont(Font.font(null, FontWeight.BOLD, 16));
+        this.invalidRegex.setFont(Font.font(null, FontWeight.BOLD, 14));
         final VBox userInputContainer = new VBox();
         userInputContainer.setSpacing(10);
         userInputContainer.getChildren().addAll(this.userInput, this.invalidRegex);
@@ -81,17 +82,18 @@ public class FSMContainer extends HBox {
                 System.out.println("Generate nodes: " + regexTree.getParseNode().getNodeList().isEmpty());
                 final ENFA enfa = new ENFA();
                 enfa.create(regexTree);
-                System.out.println("Check if there is a states created: " + !enfa.getStates().isEmpty());
-                System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
-                for(final State state : enfa.getStates()) {
-                    System.out.println("Get State number: " + state.getStateNumber());
-                    System.out.println("Get State symbol: " + state.getSymbol());
-                    System.out.println("Get State isInitialState: " + state.isInitialState());
-                    System.out.println("Get State isLastState: " + state.isLastState());
-                    System.out.println("Get State getToStates: " + state.getToStates());
-                    System.out.println("Get State getFromStates: " + state.getFromStates());
-                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
-                }
+                new FSMView(enfa.getStates());
+                // System.out.println("Check if there is a states created: " + !enfa.getStates().isEmpty());
+                // System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
+                // for(final State state : enfa.getStates()) {
+                //     System.out.println("Get State number: " + state.getStateNumber());
+                //     System.out.println("Get State symbol: " + state.getSymbol());
+                //     System.out.println("Get State isInitialState: " + state.isInitialState());
+                //     System.out.println("Get State isLastState: " + state.isLastState());
+                //     System.out.println("Get State getToStates: " + state.getToStates());
+                //     System.out.println("Get State getFromStates: " + state.getFromStates());
+                //     System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
+                // }
             }
         });
     }
