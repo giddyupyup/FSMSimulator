@@ -45,7 +45,7 @@ public class FSMContainer extends HBox {
         userInputContainer.setSpacing(10);
         userInputContainer.getChildren().addAll(this.userInput, this.invalidRegex);
         this.activateUserInputValidation(this.userInput, this.invalidRegex, this.regex, this.generateBtn);
-        this.setSpacing(15);
+        this.setSpacing(30);
         this.setPadding(new Insets(25, 20, 0, 20));
         this.getChildren().addAll(this.enterLabel, userInputContainer, this.generateBtn);
     }

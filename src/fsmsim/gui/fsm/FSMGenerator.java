@@ -31,22 +31,21 @@ public class FSMGenerator extends Pane {
 
 		//REGULAR FSM
 
-		this.getChildren().add(new Arrow(50, 75, 73, 75, ""));
+		this.getChildren().add(new Arrow(25, 75, 47, 75, ""));
 
-		this.getChildren().add(new FSMCircle(100, 75, 0)); // +50 for x , y should be the endY of previous state
+		this.getChildren().add(new FSMCircle(75, 75, 0)); // +50 for x , y should be the endY of previous state
 
-		this.getChildren().add(new Arrow(127, 75, 173, 75, "$")); // +27 -> startX, +73 for endX, the same for y
+		this.getChildren().add(new Arrow(102, 75, 148, 75, "$")); // +27 -> startX, +73 for endX, the same for y
 
-		this.getChildren().add(new FSMCircle(200, 75, 1)); //+100 for x, y should be the endY of previous state
+		this.getChildren().add(new FSMCircle(175, 75, 1)); //+100 for x, y should be the endY of previous state
 
-		this.getChildren().add(new Arrow(227, 75, 273, 75, "a ")); // +27 -> startX, +73 for endX, the same for y
+		this.getChildren().add(new Arrow(202, 75, 248, 75, "a ")); // +27 -> startX, +73 for endX, the same for y
 
-		this.getChildren().add(new FSMCircle(300, 75, 2)); //+100 for x, y should be the endY of previous state
+		this.getChildren().add(new FSMCircle(275, 75, 2)); //+100 for x, y should be the endY of previous state
 
-		this.getChildren().add(new Arrow(327, 75, 373, 75, "$ ")); // +27 -> startX, +73 for endX, the same for y
+		this.getChildren().add(new Arrow(302, 75, 348, 75, "$ ")); // +27 -> startX, +73 for endX, the same for y
 
-		this.getChildren().add(new FSMCircle(405, 75, 3, true)); //+100 for x, y should be the endY of previous state
-
+		this.getChildren().add(new FSMCircle(380, 75, 3, true)); //+105 for x, y should be the endY of previous state
 
 		//UNION FSM
 
@@ -78,8 +77,7 @@ public class FSMGenerator extends Pane {
 
 		this.getChildren().add(new Arrow(327, 347, 375, 310, "$")); //up +27 for startX, +75 for endX; +0 for startY, -37 for endY
 
-		this.getChildren().add(new FSMCircle(405, 300, 5, true)); //+100 for x, b is -100 from x
-
+		this.getChildren().add(new FSMCircle(405, 300, 5, true)); //+105 for x, b is -100 from x
 
 		//KSTAR FSM
 		this.getChildren().add(new Arrow(50, 500, 73, 500, ""));
@@ -101,6 +99,5 @@ public class FSMGenerator extends Pane {
 		this.getChildren().add(new CurveArrow(true, 300, 473, 200, 473, "$")); //startX from stateX, endX -> startX - 100; startY, endY = -27
 
 		this.getChildren().add(new FSMCircle(400, 500, 3)); //+105 for x, y should be the endY of previous state
-
 	}
 }

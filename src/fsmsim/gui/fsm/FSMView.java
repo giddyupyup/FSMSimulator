@@ -13,11 +13,11 @@ import javafx.scene.Scene;
 public class FSMView extends Stage {
 
 	public FSMView(final List<State> states) {
-		this.initStyle(StageStyle.UTILITY);
+		this.initStyle(StageStyle.DECORATED);
 		this.initOwner(MainPanel.get().getWindow());
         this.initModality(Modality.WINDOW_MODAL);
         this.setScene(new Scene(new FSMGenerator(states)));
-        // this.setResizable(false);
+        this.setResizable(false);
         this.sizeToScene();
         this.show();
 	}
