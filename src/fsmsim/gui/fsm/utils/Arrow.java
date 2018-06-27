@@ -51,13 +51,13 @@ public class Arrow extends Group{
         arrowHead.getElements().add(new LineTo(endX, endY));
 
         final Label label = new Label(symbol);
-        label.setFont(Font.font(null, FontWeight.BOLD, 16));
+        label.setFont(Font.font(null, FontWeight.BOLD, 20));
 
         final double angle2 = Math.atan2((endY - startY), (endX - startX));
         final double distance = Math.sqrt(Math.pow((endX - startX), 2) + Math.pow((endY - startY), 2)) / 2;
 
         final double labelX = startX + (distance * Math.cos(angle2)) - 7;
-        final double labelY = startY + (distance * Math.sin(angle2)) - (endY - startY > 0 ? 30 : 25);
+        final double labelY = startY + (distance * Math.sin(angle2)) - (endY - startY > 0 ? 37 : 33);
 
         label.relocate(labelX, labelY);
 

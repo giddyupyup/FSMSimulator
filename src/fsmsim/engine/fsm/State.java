@@ -1,5 +1,7 @@
 package fsmsim.engine.fsm;
 
+import fsmsim.engine.Specials;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ public class State {
     final private boolean lastState;
     final private int stateNumber;
     final private String symbol;
+    private Specials stateSpecial;
     private List<Integer> toStates;
     private List<Integer> fromStates;
 
@@ -21,6 +24,7 @@ public class State {
         this.fromStates = fromStates;
         this.stateNumber = stateNumber;
         this.symbol = symbol;
+        this.stateSpecial = null;
     }
 
     public State(final int stateNumber,
@@ -32,6 +36,7 @@ public class State {
         this.fromStates = null;
         this.stateNumber = stateNumber;
         this.symbol = symbol;
+        this.stateSpecial = null;
     }
 
     public State(final int stateNumber,
@@ -42,6 +47,11 @@ public class State {
         this.fromStates = fromStates;
         this.stateNumber = stateNumber;
         this.symbol = null;
+        this.stateSpecial = null;
+    }
+
+    public void updateSpecial(final Specials stateSpecial) {
+        this.stateSpecial = stateSpecial;
     }
 
     public boolean isInitialState() {

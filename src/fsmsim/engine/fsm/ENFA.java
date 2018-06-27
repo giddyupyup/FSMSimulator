@@ -71,6 +71,7 @@ public class ENFA implements FSM {
         final List<Integer> lastAltFromStates = new ArrayList<>();
 
         final State firstState;
+        final State lastState;
 
         if(initial) {
             firstState = this.createState(StateType.INITIAL,
@@ -99,19 +100,27 @@ public class ENFA implements FSM {
         }
 
         if(initial) {
-            altStates.add(this.createState(StateType.LAST,
-                                       this.getCurrentState(),
-                                       lastAltFromStates,
-                                       null,
-                                       null));
+            lastState = this.createState(StateType.LAST,
+                                         this.getCurrentState(),
+                                         lastAltFromStates,
+                                         null,
+                                         null);
+            altStates.add(lastState);
         } else {
             final List<Integer> lastAltToStates = new ArrayList<>();
-            altStates.add(this.createState(StateType.COMMON,
-                                       this.getCurrentState(),
-                                       lastAltFromStates,
-                                       lastAltToStates,
-                                       Specials.EMPTY_STRING.toString()));
+            lastState = this.createState(StateType.COMMON,
+                                         this.getCurrentState(),
+                                         lastAltFromStates,
+                                         lastAltToStates,
+                                         Specials.EMPTY_STRING.toString());
+            altStates.add(lastState);
             this.advanceCurrentState();
+        }
+
+        if(!firstState.getToStates().isEmpty() &&
+            firstState.getToStates().size() > 1) {
+            firstState.updateSpecial(Specials.UNION);
+            lastState.updateSpecial(Specials.UNION);
         }
 
         return altStates;
@@ -169,6 +178,7 @@ public class ENFA implements FSM {
                                       fromStates,
                                       firstToStates,
                                       Specials.EMPTY_STRING.toString());
+        firstState.updateSpecial(Specials.KLEENE_STAR);
         kStarStates.add(firstState);        
         this.advanceCurrentState();
 

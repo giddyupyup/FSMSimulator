@@ -83,17 +83,17 @@ public class FSMContainer extends HBox {
                 final ENFA enfa = new ENFA();
                 enfa.create(regexTree);
                 new FSMView(enfa.getStates());
-                // System.out.println("Check if there is a states created: " + !enfa.getStates().isEmpty());
-                // System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
-                // for(final State state : enfa.getStates()) {
-                //     System.out.println("Get State number: " + state.getStateNumber());
-                //     System.out.println("Get State symbol: " + state.getSymbol());
-                //     System.out.println("Get State isInitialState: " + state.isInitialState());
-                //     System.out.println("Get State isLastState: " + state.isLastState());
-                //     System.out.println("Get State getToStates: " + state.getToStates());
-                //     System.out.println("Get State getFromStates: " + state.getFromStates());
-                //     System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
-                // }
+                System.out.println("Check if there is a states created: " + !enfa.getStates().isEmpty());
+                System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
+                for(final State state : enfa.getStates()) {
+                    System.out.println("Get State number: " + state.getStateNumber());
+                    System.out.println("Get State symbol: " + state.getSymbol());
+                    System.out.println("Get State isInitialState: " + state.isInitialState());
+                    System.out.println("Get State isLastState: " + state.isLastState());
+                    System.out.println("Get State getToStates: " + state.getToStates());
+                    System.out.println("Get State getFromStates: " + state.getFromStates());
+                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
+                }
             }
         });
     }
