@@ -1,103 +1,102 @@
 package fsmsim.gui.fsm;
 
 import fsmsim.engine.fsm.State;
+import fsmsim.engine.fsm.State.StateSpecial;
 import fsmsim.gui.fsm.utils.Arrow;
 import fsmsim.gui.fsm.utils.CurveArrow;
 import fsmsim.gui.fsm.utils.FSMCircle;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javafx.scene.layout.Pane;
 import javafx.geometry.Insets;
 
-public class FSMGenerator extends Pane {
+public final class FSMGenerator extends Pane {
 	private double stateX;
 	private double stateY;
+	private double firstKStarX;
+	private double secondKStarX;
+	private int multiplier;
+	private List<FSMState> fsmStates;
 
 	public FSMGenerator(final List<State> states) {
 		this.setPadding(new Insets(20));
+		this.stateX = 75.0;
+		this.firstKStarX = 0;
+		this.secondKStarX = 0;
+		this.multiplier = 0;
 
+		for(final State state : states) {
+			if(state.getSpecial() == StateSpecial.UNION || state.getSpecial() == StateSpecial.KSTAR) ++this.multiplier;
+		}
 
+		this.stateY = 75.0 * (multiplier + 1);
 
-		this.stateX = 100;
-		this.stateY = 75.0 * ((int)(states.size() / 5) + 1);
+		System.out.println("multiplier: " + multiplier);
 
 		System.out.println("stateX: " + stateX);
 		System.out.println("stateY: " + stateY);
 
-		for(final State state : states) {
+		this.fsmStates = this.init(states);
 
+		this.getChildren().addAll(this.fsmStates);
+	}
+
+	private final List<FSMState> init(final List<State> states) {
+		final List<FSMState> fsmStates = new ArrayList<>();
+		double unionX = 0;
+		double unionY = 0;
+
+		for(final State state : states) {
+			final FSMState fsmState;
+			if(state.getSpecial() == StateSpecial.UNION) {
+				unionX = this.stateX;
+				unionY = this.stateY;
+			}
+
+			if(state.getSpecial() == StateSpecial.KSTAR) this.firstKStarX = this.stateX;
+			if(state.getSpecial() == StateSpecial.SECOND_KSTAR) this.secondKStarX = this.stateX;
+
+			if(state.isInitialState()) {
+				fsmState = this.addInitialState(state);
+			} else if(state.isLastState()) {
+				fsmState = this.addLastState(state);
+			} else {
+				fsmState = this.addCommonState(state);
+			}
+			if(state.getSpecial() == StateSpecial.UNION) this.stateY -= 47;
+			if(state.getSpecial() == StateSpecial.TOP_UNION) {
+				this.stateX = unionX;
+				this.stateY = unionY + 47;	
+			}
+
+			if(state.getSpecial() == StateSpecial.BOTTOM_UNION) this.stateY = unionY;
+
+			this.stateX += 100;
+
+
+			fsmStates.add(fsmState);
 		}
 
-		//REGULAR FSM
+		return fsmStates;
+	}
 
-		this.getChildren().add(new Arrow(25, 75, 47, 75, ""));
+	private FSMState addInitialState(final State state) {
+		return new FSMState(this.stateX, this.stateY, state);
+	}
 
-		this.getChildren().add(new FSMCircle(75, 75, 0)); // +50 for x , y should be the endY of previous state
+	private FSMState addLastState(final State state) {
+		return new FSMState(this.stateX, this.stateY, state);
+	}
 
-		this.getChildren().add(new Arrow(102, 75, 148, 75, "$")); // +27 -> startX, +73 for endX, the same for y
-
-		this.getChildren().add(new FSMCircle(175, 75, 1)); //+100 for x, y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(202, 75, 248, 75, "a ")); // +27 -> startX, +73 for endX, the same for y
-
-		this.getChildren().add(new FSMCircle(275, 75, 2)); //+100 for x, y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(302, 75, 348, 75, "$ ")); // +27 -> startX, +73 for endX, the same for y
-
-		this.getChildren().add(new FSMCircle(380, 75, 3, true)); //+105 for x, y should be the endY of previous state
-
-		//UNION FSM
-
-		this.getChildren().add(new Arrow(50, 300, 73, 300, ""));
-
-		this.getChildren().add(new FSMCircle(100, 300, 0)); // +50 for x , y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(125, 290, 173, 253, "$")); //up +25 for startX, +73 for endX; -10 for startY, -47 for endY
-
-		this.getChildren().add(new Arrow(125, 310, 173, 347, "$")); //down +25 for startX, +73 for endX; +10 for startY, +47 for endY
-
-		//up union
-
-		this.getChildren().add(new FSMCircle(200, 253, 1)); //+100 for x, y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(227, 253, 273, 253, "a")); // +27 -> startX, +73 for endX, the same for y
-
-		this.getChildren().add(new FSMCircle(300, 253, 2)); //+100 for x, y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(327, 253, 375, 290, "$")); //down +27 for startX, +75 for endX; +0 for startY, +37 for endY
-
-		//down union
-
-		this.getChildren().add(new FSMCircle(200, 347, 3));  //+100 for x, y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(227, 347, 273, 347, "b")); // +27 -> startX, +73 for endX, the same for y
-
-		this.getChildren().add(new FSMCircle(300, 347, 4)); //+100 for x, y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(327, 347, 375, 310, "$")); //up +27 for startX, +75 for endX; +0 for startY, -37 for endY
-
-		this.getChildren().add(new FSMCircle(405, 300, 5, true)); //+105 for x, b is -100 from x
-
-		//KSTAR FSM
-		this.getChildren().add(new Arrow(50, 500, 73, 500, ""));
-
-		this.getChildren().add(new FSMCircle(100, 500, 0)); // +50 for x , y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(127, 500, 173, 500, "$")); // +27 -> startX, +73 for endX, the same for y
-
-		this.getChildren().add(new CurveArrow(false, 100, 527, 400, 527, "$")); //startX from stateX, endX +300; startY, endY = +27
-
-		this.getChildren().add(new FSMCircle(200, 500, 1)); //+100 for x, y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(227, 500, 273, 500, "a ")); // +27 -> startX, +73 for endX, the same for y
-
-		this.getChildren().add(new FSMCircle(300, 500, 2)); //+100 for x, y should be the endY of previous state
-
-		this.getChildren().add(new Arrow(327, 500, 373, 500, "$ ")); // +27 -> startX, +73 for endX, the same for y
-
-		this.getChildren().add(new CurveArrow(true, 300, 473, 200, 473, "$")); //startX from stateX, endX -> startX - 100; startY, endY = -27
-
-		this.getChildren().add(new FSMCircle(400, 500, 3)); //+105 for x, y should be the endY of previous state
+	private FSMState addCommonState(final State state) {
+		if(state.getSpecial() == StateSpecial.THIRD_KSTAR) {
+			return new FSMState(this.stateX, this.stateY, this.secondKStarX, state);
+		} else if(state.getSpecial() == StateSpecial.LAST_KSTAR) {
+			return new FSMState(this.stateX, this.stateY, this.firstKStarX, state);
+		} else {
+			return new FSMState(this.stateX, this.stateY, state);
+		}
 	}
 }

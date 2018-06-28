@@ -17,7 +17,7 @@ public class FSMView extends Stage {
 		this.initOwner(MainPanel.get().getWindow());
         this.initModality(Modality.WINDOW_MODAL);
         this.setScene(new Scene(new FSMGenerator(states)));
-        this.setResizable(false);
+        // this.setResizable(false);
         this.sizeToScene();
         this.show();
 	}

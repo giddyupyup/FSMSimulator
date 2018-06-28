@@ -14,6 +14,7 @@ public class FSMCircle extends Group {
 	public FSMCircle(final double centerX,
 					 final double centerY,
 					 final int state) {
+		final int labelMultiplier = Integer.toString(state).length();
 		final Circle fsmCircle = new Circle(centerX, centerY, STATE_RADIUS);
 		fsmCircle.setFill(null);
 		fsmCircle.setStroke(Color.BLACK);
@@ -21,7 +22,7 @@ public class FSMCircle extends Group {
 
 		final Label stateLabel = new Label(Integer.toString(state));
 		stateLabel.setFont(Font.font(null, FontWeight.BOLD, 20));
-		stateLabel.relocate(centerX - 6.3, centerY - 15);
+		stateLabel.relocate(centerX - (6.2 * labelMultiplier), centerY - 15);
 
 		this.getChildren().addAll(fsmCircle, stateLabel);
 	}
@@ -30,6 +31,7 @@ public class FSMCircle extends Group {
 					 final double centerY,
 					 final int state,
 					 final boolean finalState) {
+		final int labelMultiplier = Integer.toString(state).length();
 		final Circle fsmCircle = new Circle(centerX, centerY, STATE_RADIUS);
 		fsmCircle.setFill(null);
 		fsmCircle.setStroke(Color.BLACK);
@@ -42,7 +44,7 @@ public class FSMCircle extends Group {
 
 		final Label stateLabel = new Label(Integer.toString(state));
 		stateLabel.setFont(Font.font(null, FontWeight.BOLD, 20));
-		stateLabel.relocate(centerX - 6.3, centerY - 15);
+		stateLabel.relocate(centerX - (6.2 * labelMultiplier), centerY - 15);
 
 		this.getChildren().addAll(fsmCircle, fsmCircleFinal, stateLabel);
 	}

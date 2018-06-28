@@ -87,6 +87,7 @@ public class FSMContainer extends HBox {
                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
                 for(final State state : enfa.getStates()) {
                     System.out.println("Get State number: " + state.getStateNumber());
+                    System.out.println("Get State special: " + state.getSpecial());
                     System.out.println("Get State symbol: " + state.getSymbol());
                     System.out.println("Get State isInitialState: " + state.isInitialState());
                     System.out.println("Get State isLastState: " + state.isLastState());

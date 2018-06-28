@@ -4,6 +4,7 @@ import fsmsim.engine.Specials;
 import fsmsim.engine.regex.Tree;
 import fsmsim.engine.regex.Node;
 import fsmsim.engine.fsm.State.StateType;
+import fsmsim.engine.fsm.State.StateSpecial;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,6 +70,7 @@ public class ENFA implements FSM {
         final List<State> altStates = new ArrayList<>();
         final List<Integer> firstAltToStates = new ArrayList<>();
         final List<Integer> lastAltFromStates = new ArrayList<>();
+        final List<State> getLastStates = new ArrayList<>();
 
         final State firstState;
         final State lastState;
@@ -96,7 +98,24 @@ public class ENFA implements FSM {
             final List<Integer> innerFromStates = new ArrayList<>();
             innerFromStates.add(firstState.getStateNumber());
             altStates.addAll(this.createSeqFSM(innerFromStates, innerNode));
+            getLastStates.add(this.getState(altStates, this.getCurrentState() - 1));
             lastAltFromStates.add(this.getCurrentState() - 1);
+        }
+
+        if(!getLastStates.isEmpty() &&
+            getLastStates.size() > 1) {
+
+            boolean top = true;
+
+            for(final State getState : getLastStates) {
+                if(top) {
+                    getState.updateSpecial(StateSpecial.TOP_UNION);
+                    top = false;
+                } else {
+                    getState.updateSpecial(StateSpecial.BOTTOM_UNION);
+                    top = true;
+                }
+            }
         }
 
         if(initial) {
@@ -119,8 +138,7 @@ public class ENFA implements FSM {
 
         if(!firstState.getToStates().isEmpty() &&
             firstState.getToStates().size() > 1) {
-            firstState.updateSpecial(Specials.UNION);
-            lastState.updateSpecial(Specials.UNION);
+            firstState.updateSpecial(StateSpecial.UNION);
         }
 
         return altStates;
@@ -168,6 +186,7 @@ public class ENFA implements FSM {
         final State firstState;
         final State secondState;
         final State thirdState;
+        final State lastState;
         
         final List<Integer> firstToStates = new ArrayList<>();
 
@@ -178,7 +197,7 @@ public class ENFA implements FSM {
                                       fromStates,
                                       firstToStates,
                                       Specials.EMPTY_STRING.toString());
-        firstState.updateSpecial(Specials.KLEENE_STAR);
+        firstState.updateSpecial(StateSpecial.KSTAR);
         kStarStates.add(firstState);        
         this.advanceCurrentState();
 
@@ -201,7 +220,9 @@ public class ENFA implements FSM {
         }
 
         secondState = this.getState(kStarStates, secondStateNumber);
+        secondState.updateSpecial(StateSpecial.SECOND_KSTAR);
         thirdState = this.getState(kStarStates, this.getCurrentState() - 1);
+        thirdState.updateSpecial(StateSpecial.THIRD_KSTAR);
 
         firstState.addToStates(this.getCurrentState());
         secondState.addFromStates(this.getCurrentState() - 1);
@@ -215,11 +236,13 @@ public class ENFA implements FSM {
         lastFromStates.add(thirdState.getStateNumber());
         lastFromStates.add(firstState.getStateNumber());
 
-        kStarStates.add(this.createState(StateType.COMMON,
+        lastState = this.createState(StateType.COMMON,
                                            this.getCurrentState(),
                                            lastFromStates,
                                            lastToStates,
-                                           Specials.EMPTY_STRING.toString()));
+                                           Specials.EMPTY_STRING.toString());
+        lastState.updateSpecial(StateSpecial.LAST_KSTAR);
+        kStarStates.add(lastState);
         this.advanceCurrentState();
 
         return kStarStates;

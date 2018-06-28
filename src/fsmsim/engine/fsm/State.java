@@ -1,7 +1,5 @@
 package fsmsim.engine.fsm;
 
-import fsmsim.engine.Specials;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +8,7 @@ public class State {
     final private boolean lastState;
     final private int stateNumber;
     final private String symbol;
-    private Specials stateSpecial;
+    private StateSpecial stateSpecial;
     private List<Integer> toStates;
     private List<Integer> fromStates;
 
@@ -24,7 +22,7 @@ public class State {
         this.fromStates = fromStates;
         this.stateNumber = stateNumber;
         this.symbol = symbol;
-        this.stateSpecial = null;
+        this.stateSpecial = StateSpecial.NONE;
     }
 
     public State(final int stateNumber,
@@ -36,7 +34,7 @@ public class State {
         this.fromStates = null;
         this.stateNumber = stateNumber;
         this.symbol = symbol;
-        this.stateSpecial = null;
+        this.stateSpecial = StateSpecial.NONE;
     }
 
     public State(final int stateNumber,
@@ -47,11 +45,50 @@ public class State {
         this.fromStates = fromStates;
         this.stateNumber = stateNumber;
         this.symbol = null;
-        this.stateSpecial = null;
+        this.stateSpecial = StateSpecial.NONE;
     }
 
-    public void updateSpecial(final Specials stateSpecial) {
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+
+        result = prime * result + this.stateNumber;
+        result = prime * result + this.toStates.hashCode();
+        result = prime * result + this.fromStates.hashCode();
+        result = prime * result + this.symbol.hashCode();
+        result = prime * result + this.stateSpecial.hashCode();
+        
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if(this == other) {
+            return true;
+        }
+
+        if(!(other instanceof State)) {
+            return false;
+        }
+
+        final State otherState = (State) other;
+        return this.getStateNumber() == otherState.getStateNumber() &&
+               this.getSymbol() == otherState.getSymbol() &&
+               this.getSpecial() == otherState.getSpecial() &&
+               this.isInitialState() == otherState.isInitialState() &&
+               this.isLastState() == otherState.isLastState() &&
+               this.getToStates().equals(otherState.getToStates()) &&
+               this.getFromStates().equals(otherState.getFromStates());
+
+    }
+
+    public void updateSpecial(final StateSpecial stateSpecial) {
         this.stateSpecial = stateSpecial;
+    }
+
+    public StateSpecial getSpecial() {
+        return this.stateSpecial;
     }
 
     public boolean isInitialState() {
@@ -99,5 +136,16 @@ public class State {
         INITIAL,
         COMMON,
         LAST
+    }
+
+    public enum StateSpecial {
+        UNION,
+        TOP_UNION,
+        BOTTOM_UNION,
+        KSTAR,
+        SECOND_KSTAR,
+        THIRD_KSTAR,
+        LAST_KSTAR,
+        NONE
     }
 }
