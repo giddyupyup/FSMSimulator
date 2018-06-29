@@ -60,7 +60,7 @@ public class FSMContainer extends HBox {
                     userInput.setStyle(null);
                     invalidRegex.setText("");
                 } else {
-                    FSMContainer.regexTree = new Tree(regex.parse(userInput.getText()));
+                    FSMContainer.regexTree = new Tree(regex.parse(userInput.getText().replaceAll("\\s","")));
 
                     if(!regexTree.validate()) {
                         userInput.setStyle("-fx-border-color: red; -fx-focus-color: red;");
@@ -87,7 +87,7 @@ public class FSMContainer extends HBox {
                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
                 for(final State state : enfa.getStates()) {
                     System.out.println("Get State number: " + state.getStateNumber());
-                    System.out.println("Get State special: " + state.getSpecial());
+                    System.out.println("Get State state special: " + state.getSpecial());
                     System.out.println("Get State symbol: " + state.getSymbol());
                     System.out.println("Get State isInitialState: " + state.isInitialState());
                     System.out.println("Get State isLastState: " + state.isLastState());

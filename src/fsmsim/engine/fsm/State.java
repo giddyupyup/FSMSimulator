@@ -8,7 +8,7 @@ public class State {
     final private boolean lastState;
     final private int stateNumber;
     final private String symbol;
-    private StateSpecial stateSpecial;
+    private List<StateSpecial> stateSpecial;
     private List<Integer> toStates;
     private List<Integer> fromStates;
 
@@ -22,7 +22,7 @@ public class State {
         this.fromStates = fromStates;
         this.stateNumber = stateNumber;
         this.symbol = symbol;
-        this.stateSpecial = StateSpecial.NONE;
+        this.stateSpecial = new ArrayList<>();
     }
 
     public State(final int stateNumber,
@@ -34,7 +34,7 @@ public class State {
         this.fromStates = null;
         this.stateNumber = stateNumber;
         this.symbol = symbol;
-        this.stateSpecial = StateSpecial.NONE;
+        this.stateSpecial = new ArrayList<>();
     }
 
     public State(final int stateNumber,
@@ -45,7 +45,7 @@ public class State {
         this.fromStates = fromStates;
         this.stateNumber = stateNumber;
         this.symbol = null;
-        this.stateSpecial = StateSpecial.NONE;
+        this.stateSpecial = new ArrayList<>();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class State {
         final State otherState = (State) other;
         return this.getStateNumber() == otherState.getStateNumber() &&
                this.getSymbol() == otherState.getSymbol() &&
-               this.getSpecial() == otherState.getSpecial() &&
+               this.getSpecial().equals(otherState.getSpecial()) &&
                this.isInitialState() == otherState.isInitialState() &&
                this.isLastState() == otherState.isLastState() &&
                this.getToStates().equals(otherState.getToStates()) &&
@@ -84,10 +84,10 @@ public class State {
     }
 
     public void updateSpecial(final StateSpecial stateSpecial) {
-        this.stateSpecial = stateSpecial;
+        this.stateSpecial.add(stateSpecial);
     }
 
-    public StateSpecial getSpecial() {
+    public List<StateSpecial> getSpecial() {
         return this.stateSpecial;
     }
 
@@ -142,6 +142,7 @@ public class State {
         UNION,
         TOP_UNION,
         BOTTOM_UNION,
+        LAST_UNION,
         KSTAR,
         SECOND_KSTAR,
         THIRD_KSTAR,

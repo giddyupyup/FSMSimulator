@@ -102,18 +102,23 @@ public class ENFA implements FSM {
             lastAltFromStates.add(this.getCurrentState() - 1);
         }
 
-        if(!getLastStates.isEmpty() &&
-            getLastStates.size() > 1) {
+        if(!getLastStates.isEmpty()) {
+            if(getLastStates.size() > 1) {
+                boolean top = true;
 
-            boolean top = true;
-
-            for(final State getState : getLastStates) {
-                if(top) {
-                    getState.updateSpecial(StateSpecial.TOP_UNION);
-                    top = false;
-                } else {
-                    getState.updateSpecial(StateSpecial.BOTTOM_UNION);
-                    top = true;
+                for(final State getState : getLastStates) {
+                    getState.addToStates(this.getCurrentState());
+                    if(top) {
+                        getState.updateSpecial(StateSpecial.TOP_UNION);
+                        top = false;
+                    } else {
+                        getState.updateSpecial(StateSpecial.BOTTOM_UNION);
+                        top = true;
+                    }
+                }
+            } else {
+                 for(final State getState : getLastStates) {
+                    getState.addToStates(this.getCurrentState());
                 }
             }
         }
@@ -139,6 +144,7 @@ public class ENFA implements FSM {
         if(!firstState.getToStates().isEmpty() &&
             firstState.getToStates().size() > 1) {
             firstState.updateSpecial(StateSpecial.UNION);
+            lastState.updateSpecial(StateSpecial.LAST_UNION);
         }
 
         return altStates;
@@ -147,15 +153,9 @@ public class ENFA implements FSM {
     private List<State> createSeqFSM(final List<Integer> fromStates,
                                      final Node node) {
         final List<State> seqStates = new ArrayList<>();
-        final List<State> getLastStates = new ArrayList<>();
 
         for(final Node innerNode : node.getNodeList()) {
             seqStates.addAll(this.createStates(fromStates, innerNode));
-            getLastStates.add(this.getState(seqStates, this.getCurrentState() - 1));
-        }
-
-        for(final State getState : getLastStates) {
-            getState.addToStates(this.getCurrentState());
         }
 
         return seqStates;
