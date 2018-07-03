@@ -129,7 +129,7 @@ public class State {
 
     @Override
     public String toString() {
-        return "STATE - " + this.stateNumber;
+        return "STATE - " + this.stateNumber + " Special: " + this.stateSpecial;
     }
 
     public enum StateType {

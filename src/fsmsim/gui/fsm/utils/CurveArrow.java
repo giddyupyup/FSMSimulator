@@ -23,10 +23,10 @@ public class CurveArrow extends Group{
         curve.setStrokeWidth(3);
 
         final double controlX1 = Math.abs(endX - startX) / 4 + ((endX - startX >= 0) ? startX : endX);
-        final double controlY1 = endY - (isUp ? (Math.abs(endX - startX) / 4) : -(Math.abs(endX - startX) / 4));
+        final double controlY1 = endY - (isUp ? (Math.abs(endX - startX) / 2.5) : -(Math.abs(endX - startX) / 2.5));
 
         final double controlX2 = (Math.abs(endX - startX) / 4) * 3 + ((endX - startX >= 0) ? startX : endX);
-        final double controlY2 = endY - (isUp ? (Math.abs(endX - startX) / 4) : -(Math.abs(endX - startX) / 4));
+        final double controlY2 = endY - (isUp ? (Math.abs(endX - startX) / 2.5) : -(Math.abs(endX - startX) / 2.5));
 
         curve.getElements().add(new MoveTo(startX, startY));
         if(endX - startX >= 0) curve.getElements().add(new CubicCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
@@ -60,7 +60,7 @@ public class CurveArrow extends Group{
         final double distance = Math.sqrt(Math.pow((endX - startX), 2) + Math.pow((endY - startY), 2)) / 2;
 
         final double labelX = startX + (distance * Math.cos(angle2)) - 7;
-        final double labelY = startY + (distance * Math.sin(angle2)) - (isUp ? (50 + ((Math.abs(endX - startX) / 100 - 1) * 20)) : -(25 + ((Math.abs(endX - startX) / 100 - 3) * 17.5)));
+        final double labelY = startY + (distance * Math.sin(angle2)) - (isUp ? (60 + ((Math.abs(endX - startX) / 100 - 1) * 30)) : -(((Math.abs(endX - startX) / 100 - 1) * 30)));
 
         label.relocate(labelX, labelY);
 

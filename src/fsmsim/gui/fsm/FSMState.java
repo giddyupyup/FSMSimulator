@@ -75,6 +75,21 @@ public class FSMState extends Group {
 		this.init(this.state);
 	}
 
+	public FSMState(final double centerX,
+					final double centerY,
+					final double kStarX,
+					final double topUnionX,
+					final double bottomUnionX,
+					final State state) {
+		this.centerX = centerX;
+		this.centerY = centerY;
+		this.kStarX = kStarX;
+		this.topUnionX = topUnionX;
+		this.bottomUnionX = bottomUnionX;
+		this.state = state;
+		this.init(this.state);
+	}
+
 	public double getCenterX() {
 		return this.centerX;
 	}
@@ -102,10 +117,7 @@ public class FSMState extends Group {
 	private void createLastState(final State state) {
 		this.getChildren().add(new FSMCircle(this.centerX + 5, this.centerY, state.getStateNumber(), true));
 		if(state.getSpecial().contains(StateSpecial.LAST_UNION)) {
-			final double lastTopUnionX = this.topUnionX + (this.centerX - (this.topUnionX + 100));
-			final double lastBottomUnionX = this.bottomUnionX + (this.centerX - (this.bottomUnionX + 100));
-			this.getChildren().add(new Arrow(this.topUnionX + 27, this.centerY - 47, lastTopUnionX + 75, this.centerY - 13, state.getSymbol()));
-			this.getChildren().add(new Arrow(this.bottomUnionX + 27, this.centerY + 47, lastBottomUnionX + 75, this.centerY + 13, state.getSymbol()));
+			this.addLastUnionArrows(state);
 		}
 	}
 
@@ -115,30 +127,51 @@ public class FSMState extends Group {
 	}
 
 	private void addArrows(final State state) {
-		if(state.getSpecial().contains(StateSpecial.UNION)) {
-			this.getChildren().add(new Arrow(this.centerX + 25, this.centerY - 10, this.centerX + 73, this.centerY - 47, state.getSymbol()));
-			this.getChildren().add(new Arrow(this.centerX + 25, this.centerY + 10, this.centerX + 73, this.centerY + 47, state.getSymbol()));
-		}
-
-		if(state.getSpecial().contains(StateSpecial.LAST_UNION)) {
-			System.out.println("check for adding arrows in common state");
-			final double lastTopUnionX = this.topUnionX + (this.centerX - (this.topUnionX + 100));
-			final double lastBottomUnionX = this.bottomUnionX + (this.centerX - (this.bottomUnionX + 100));
-			System.out.println("lastTopUnionX: " + lastTopUnionX);
-			System.out.println("lastBottomUnionX: " + lastBottomUnionX);
-			this.getChildren().add(new Arrow(this.topUnionX + 27, this.centerY - 47, lastTopUnionX + 75, this.centerY - 13, state.getSymbol()));
-			this.getChildren().add(new Arrow(this.bottomUnionX + 27, this.centerY + 47, lastBottomUnionX + 75, this.centerY + 13, state.getSymbol()));
-		}
-
-		if(state.getSpecial().contains(StateSpecial.THIRD_KSTAR)) {
-			if(!isStateInUnion(state)) this.getChildren().add(new Arrow(this.centerX + 27, this.centerY, this.centerX + 73, this.centerY, state.getSymbol()));
-			this.getChildren().add(new CurveArrow(true, this.centerX, this.centerY - 27, this.kStarX, this.centerY - 27, state.getSymbol()));
+		if(state.getSpecial().contains(StateSpecial.LAST_UNION) && 
+		   state.getSpecial().contains(StateSpecial.THIRD_KSTAR)) {
+			this.addLastUnionAndThirdKStarArrows(state);
+		} else if(state.getSpecial().contains(StateSpecial.UNION)) {
+			this.addUnionArrows(state);
+		} else if(state.getSpecial().contains(StateSpecial.LAST_UNION)) {
+			this.addLastUnionArrows(state);
+		} else if(state.getSpecial().contains(StateSpecial.THIRD_KSTAR)) {
+			this.addThirdKStarArrows(state);
 		} else if(state.getSpecial().contains(StateSpecial.LAST_KSTAR)) {
-			if(!isStateInUnion(state)) this.getChildren().add(new Arrow(this.centerX + 27, this.centerY, this.centerX + 73, this.centerY, state.getSymbol()));
-			this.getChildren().add(new CurveArrow(false, this.kStarX, this.centerY + 27, this.centerX, this.centerY + 27, state.getSymbol()));
+			this.addLastKStarArrows(state);
 		} else {
-			if(!isStateInUnion(state)) this.getChildren().add(new Arrow(this.centerX + 27, this.centerY, this.centerX + 73, this.centerY, state.getSymbol()));
+			this.addCommonArrows(state);
 		}
+	}
+
+	private void addCommonArrows(final State state) {
+		if(!this.isStateInUnion(state)) this.getChildren().add(new Arrow(this.centerX + 27, this.centerY, this.centerX + 73, this.centerY, state.getSymbol()));
+	}
+
+	private void addUnionArrows(final State state) {
+		this.getChildren().add(new Arrow(this.centerX + 25, this.centerY - 10, this.centerX + 73, this.centerY - 47, state.getSymbol()));
+		this.getChildren().add(new Arrow(this.centerX + 25, this.centerY + 10, this.centerX + 73, this.centerY + 47, state.getSymbol()));
+	}
+
+	private void addLastUnionArrows(final State state) {
+		final double lastTopUnionX = this.topUnionX + (this.centerX - (this.topUnionX + 100));
+		final double lastBottomUnionX = this.bottomUnionX + (this.centerX - (this.bottomUnionX + 100));
+		this.getChildren().add(new Arrow(this.topUnionX + 27, this.centerY - 47, lastTopUnionX + 75, this.centerY - 13, state.getSymbol()));
+		this.getChildren().add(new Arrow(this.bottomUnionX + 27, this.centerY + 47, lastBottomUnionX + 75, this.centerY + 13, state.getSymbol()));
+	}
+
+	private void addThirdKStarArrows(final State state) {
+		this.addCommonArrows(state);
+		this.getChildren().add(new CurveArrow(true, this.centerX, this.centerY - 27, this.kStarX, this.centerY - 27, state.getSymbol()));
+	}
+
+	private void addLastKStarArrows(final State state) {
+		this.addCommonArrows(state);
+		this.getChildren().add(new CurveArrow(false, this.kStarX, this.centerY + 27, this.centerX, this.centerY + 27, state.getSymbol()));
+	}
+
+	private void addLastUnionAndThirdKStarArrows(final State state) {
+		this.addLastUnionArrows(state);
+		this.addThirdKStarArrows(state);
 	}
 
 	private boolean isStateInUnion(final State state) {
