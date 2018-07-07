@@ -3,10 +3,9 @@ package fsmsim.gui.panel;
 import fsmsim.engine.regex.Tree;
 import fsmsim.engine.regex.RegexParser;
 import fsmsim.engine.fsm.ENFA;
-import fsmsim.engine.fsm.State;
 import fsmsim.gui.fsm.FSMView;
 
-import java.util.List;
+import javafx.event.ActionEvent;
 
 import javafx.scene.Cursor;
 import javafx.scene.layout.HBox;
@@ -22,15 +21,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class FSMContainer extends HBox {
-	private final Label enterLabel = new Label("Enter Regular Expression");
+    private final Label enterLabel = new Label("Enter Regular Expression");
     private final Button generateBtn = new Button("Generate eNFA");
     private final TextField userInput = new TextField();
-    private Label invalidRegex = new Label();
+    private final Label invalidRegex;
 
     private final RegexParser regex;
     private static Tree regexTree;
 
     FSMContainer() {
+        this.invalidRegex = new Label();
         this.regex = new RegexParser();
         this.enterLabel.setAlignment(Pos.BOTTOM_CENTER);
         this.generateBtn.setAlignment(Pos.CENTER);
@@ -76,25 +76,11 @@ public class FSMContainer extends HBox {
     }
 
     private static void generateFSM(final Tree regexTree, final Button generateBtn) {
-        generateBtn.setOnAction(event -> {
+        generateBtn.setOnAction((ActionEvent event) -> {
             if(regexTree.validate()) {
-                System.out.println("Go generate");
-                System.out.println("Generate nodes: " + regexTree.getParseNode().getNodeList().isEmpty());
                 final ENFA enfa = new ENFA();
                 enfa.create(regexTree);
                 new FSMView(enfa.getStates());
-                System.out.println("Check if there is a states created: " + !enfa.getStates().isEmpty());
-                System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
-                for(final State state : enfa.getStates()) {
-                    System.out.println("Get State number: " + state.getStateNumber());
-                    System.out.println("Get State state special: " + state.getSpecial());
-                    System.out.println("Get State symbol: " + state.getSymbol());
-                    System.out.println("Get State isInitialState: " + state.isInitialState());
-                    System.out.println("Get State isLastState: " + state.isLastState());
-                    System.out.println("Get State getToStates: " + state.getToStates());
-                    System.out.println("Get State getFromStates: " + state.getFromStates());
-                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
-                }
             }
         });
     }

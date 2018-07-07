@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.Cursor;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.TextAlignment;
 
 public class AboutContainer extends StackPane {
@@ -21,7 +22,7 @@ public class AboutContainer extends StackPane {
         about.setPrefHeight(20.0);
         about.setAlignment(Pos.CENTER);
         about.setTextAlignment(TextAlignment.CENTER);
-        about.setOnMouseClicked(e -> {
+        about.setOnMouseClicked((MouseEvent e) -> {
             new AboutMenu();
         });
 

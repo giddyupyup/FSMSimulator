@@ -8,9 +8,9 @@ public class State {
     final private boolean lastState;
     final private int stateNumber;
     final private String symbol;
-    private List<StateSpecial> stateSpecial;
-    private List<Integer> toStates;
-    private List<Integer> fromStates;
+    private final List<StateSpecial> stateSpecial;
+    private final List<Integer> toStates;
+    private final List<Integer> fromStates;
 
     public State(final int stateNumber,
                  final List<Integer> fromStates,

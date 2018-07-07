@@ -1,6 +1,5 @@
 package fsmsim.gui.panel;
 
-import javafx.scene.layout.BorderPane;
 import javafx.scene.Scene;
 
 public final class MainPanel extends Scene {

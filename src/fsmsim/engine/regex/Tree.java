@@ -1,7 +1,5 @@
 package fsmsim.engine.regex;
 
-import fsmsim.engine.Specials;
-import fsmsim.engine.regex.Node.NodeType;
 import fsmsim.engine.regex.Node.AltNode;
 import fsmsim.engine.regex.Node.KStarNode;
 import fsmsim.engine.regex.Node.SeqNode;
@@ -13,14 +11,14 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Tree {
-    private Node node;
-    private Lexer lexer;
-    private boolean validateTree;
+    private final Node node;
+    private final Lexer lexer;
+    private final boolean validateTree;
 
     public Tree(final Lexer lexer) {
         this.lexer = lexer;
         this.node = this.parseAlt(this.lexer);
-        this.validateTree = !this.node.getNodeType().isInvalid() ? true : false;
+        this.validateTree = !this.node.getNodeType().isInvalid();
     }
 
     public Node getParseNode() {
@@ -33,16 +31,16 @@ public class Tree {
 
     private Node parseAlt(final Lexer lexer) {
         final List<Node> nodeList = new ArrayList<>();
-        Node node;
+        Node altNode;
         while(true) {
-            node = this.parseSeq(lexer);
+            altNode = this.parseSeq(lexer);
             if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
-                if(node.getNodeType().isInvalid()) {
+                if(altNode.getNodeType().isInvalid()) {
                     return new InvalidNode();
                 } else {
-                    if(node.getNodeType().isSeq()) {
-                        if(!node.getNodeList().isEmpty()) {
-                            nodeList.add(node);
+                    if(altNode.getNodeType().isSeq()) {
+                        if(!altNode.getNodeList().isEmpty()) {
+                            nodeList.add(altNode);
                         } else {
                             return new InvalidNode();
                         }
@@ -51,13 +49,13 @@ public class Tree {
                 }
                 
             } else {
-                if(node.getNodeType().isInvalid()) {
+                if(altNode.getNodeType().isInvalid()) {
                     return new InvalidNode();
                 }
 
-                if(node.getNodeType().isSeq()) {
-                    if(!node.getNodeList().isEmpty()) {
-                        nodeList.add(node);
+                if(altNode.getNodeType().isSeq()) {
+                    if(!altNode.getNodeList().isEmpty()) {
+                        nodeList.add(altNode);
                     } else {
                         return new InvalidNode();
                     }
@@ -65,21 +63,21 @@ public class Tree {
 
                 if(lexer.peek().getSpecials() != null &&
                   lexer.peek().getSpecials().isRightParen()) {
-                    boolean isLeftParenPresent = false; 
-                    for(int i = lexer.getCurrentIdx()-1; i > -1; i--) {
-                        if(lexer.getParseRegex().get(i).getSpecials() != null &&
-                           lexer.getParseRegex().get(i).getSpecials().isRightParen()) {
-                            return new InvalidNode();
+                    int leftParen = 0;
+                    int rightParen = 0;
+                    for(final Characters character : lexer.getParseRegex()) {
+                        if(character.getSpecials() != null &&
+                           character.getSpecials().isRightParen()) {
+                            ++rightParen;
                         }
-
-                        if(lexer.getParseRegex().get(i).getSpecials() != null &&
-                           lexer.getParseRegex().get(i).getSpecials().isLeftParen()) {
-                            isLeftParenPresent = true;
-                            break;
+                        
+                        if(character.getSpecials() != null &&
+                           character.getSpecials().isLeftParen()) {
+                            ++leftParen;
                         }
                     }
-
-                    if(!isLeftParenPresent) {
+                    
+                    if(leftParen != rightParen) {
                         return new InvalidNode();
                     }
 
@@ -98,18 +96,18 @@ public class Tree {
 
     private Node parseSeq(final Lexer lexer) {
         final List<Node> nodeList = new ArrayList<>();
-        Node node;
+        Node seqNode;
         
         while(true) {
-            node = this.parseKStar(lexer);
-            if(node == null) {
+            seqNode = this.parseKStar(lexer);
+            if(seqNode == null) {
                 break;
             } else {
-                if(node.getNodeType().isInvalid()) {
+                if(seqNode.getNodeType().isInvalid()) {
                     return new InvalidNode();
                 }
 
-                nodeList.add(node);
+                nodeList.add(seqNode);
             }
         }
 
@@ -122,27 +120,27 @@ public class Tree {
 
 
     private Node parseKStar(final Lexer lexer) {
-        Node node = this.parseLexer(lexer);
+        Node kStarNode = this.parseLexer(lexer);
 
-        if(node != null) {
-            if(node.getNodeType().isInvalid()) {
-                node = new InvalidNode();
+        if(kStarNode != null) {
+            if(kStarNode.getNodeType().isInvalid()) {
+                kStarNode = new InvalidNode();
             } else {
                 if(lexer.getCurrentIdx() != lexer.getParseRegex().size()) {
                     if(lexer.peek().getSpecials() != null &&
                        lexer.peek().getSpecials().isKleeneStar()) {
                         lexer.advance();
-                        node = new KStarNode(node);
+                        kStarNode = new KStarNode(kStarNode);
                     }                    
                 }
             }
         }
 
-        return node;
+        return kStarNode;
     }
 
     private Node parseLexer(final Lexer lexer) {
-        Node node;
+        Node lexerNode;
 
         if(lexer.getCurrentIdx() != lexer.getParseRegex().size()) {
             if(lexer.peek().getSpecials() != null) {
@@ -150,34 +148,34 @@ public class Tree {
                     lexer.advance();
                     final Node innerNode = this.parseAlt(lexer);
                     if(innerNode.getNodeType().isInvalid()) {
-                        node = new InvalidNode();
+                        lexerNode = new InvalidNode();
                     } else {
                         if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
-                            node = new InvalidNode();
+                            lexerNode = new InvalidNode();
                         } else if(!lexer.peek().getSpecials().isRightParen()) {
-                            node = new InvalidNode();
+                            lexerNode = new InvalidNode();
                         } else {
                             lexer.advance();
-                            node = innerNode;
+                            lexerNode = innerNode;
                         }
                     }
                 } else if(lexer.peek().getSpecials().isEmptyString()) {
                     lexer.advance();
-                    node = new EpsNode();
+                    lexerNode = new EpsNode();
                 } else if(lexer.peek().getSpecials().isUnion() ||
                           lexer.peek().getSpecials().isRightParen()) {
-                    node = null;
+                    lexerNode = null;
                 } else {
-                    node = new InvalidNode();
+                    lexerNode = new InvalidNode();
                 }
             } else {
-                node = new LitNode(lexer.peek().getChar());
+                lexerNode = new LitNode(lexer.peek().getChar());
                 lexer.advance();
             }
         } else {
-            node = null;
+            lexerNode = null;
         }
 
-        return node; 
+        return lexerNode; 
     }
 }

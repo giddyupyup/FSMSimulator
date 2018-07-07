@@ -7,15 +7,14 @@ import fsmsim.engine.fsm.State.StateType;
 import fsmsim.engine.fsm.State.StateSpecial;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ENFA implements FSM {
 
-    private int initialState;
+    private final int initialState;
     private int lastState;
     private int currentState;
-    private List<State> states;
+    private final List<State> states;
 
 
     public ENFA() {
@@ -93,14 +92,18 @@ public class ENFA implements FSM {
             this.advanceCurrentState();
         }
 
-        for(final Node innerNode : node.getNodeList()) {
+        node.getNodeList().stream().map((innerNode) -> {
             firstState.addToStates(this.getCurrentState());
             final List<Integer> innerFromStates = new ArrayList<>();
             innerFromStates.add(firstState.getStateNumber());
             altStates.addAll(this.createSeqFSM(innerFromStates, innerNode));
+            return innerNode;
+        }).map((_item) -> {
             getLastStates.add(this.getState(altStates, this.getCurrentState() - 1));
+            return _item;
+        }).forEachOrdered((_item) -> {
             lastAltFromStates.add(this.getCurrentState() - 1);
-        }
+        });
 
         if(!getLastStates.isEmpty()) {
             if(getLastStates.size() > 1) {
@@ -117,9 +120,9 @@ public class ENFA implements FSM {
                     }
                 }
             } else {
-                 for(final State getState : getLastStates) {
+                getLastStates.forEach((getState) -> {
                     getState.addToStates(this.getCurrentState());
-                }
+                });
             }
         }
 
@@ -154,9 +157,9 @@ public class ENFA implements FSM {
                                      final Node node) {
         final List<State> seqStates = new ArrayList<>();
 
-        for(final Node innerNode : node.getNodeList()) {
+        node.getNodeList().forEach((innerNode) -> {
             seqStates.addAll(this.createStates(fromStates, innerNode));
-        }
+        });
 
         return seqStates;
     }

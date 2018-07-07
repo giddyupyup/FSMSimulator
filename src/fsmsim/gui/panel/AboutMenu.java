@@ -1,6 +1,5 @@
 package fsmsim.gui.panel;
 
-import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Modality;
