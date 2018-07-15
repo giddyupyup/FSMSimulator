@@ -162,6 +162,7 @@ public class FSMState extends Group {
             final double lastBottomUnionX = this.bottomUnionX + (this.centerX - (this.bottomUnionX + 100));
             this.getChildren().add(new Arrow(this.topUnionX + 27, this.centerY - (47 + (ARROW_MULTIPLIER * this.multiplier / 2)), lastTopUnionX + 75, this.centerY - 13, "$"));
             this.getChildren().add(new Arrow(this.bottomUnionX + 27, this.centerY + (47 + (ARROW_MULTIPLIER * this.multiplier / 2)), lastBottomUnionX + 75, this.centerY + 13, "$"));
+            if(!state.isLastState()) this.addCommonArrows(state);
 	}
 
 	private void addThirdKStarArrows(final State state) {
