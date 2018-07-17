@@ -54,7 +54,7 @@ public class CurveArrow extends Group{
         arrowHead.getElements().add(new LineTo(endX, endY));
 
         final Label label = new Label(symbol);
-        label.setFont(Font.font(null, FontWeight.BOLD, 20));
+        label.setFont(Font.font(null, FontWeight.BOLD, 22));
 
         final double angle2 = Math.atan2((endY - startY), (endX - startX));
         final double distance = Math.sqrt(Math.pow((endX - startX), 2) + Math.pow((endY - startY), 2)) / 2;

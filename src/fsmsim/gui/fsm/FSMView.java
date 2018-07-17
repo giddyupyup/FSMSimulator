@@ -13,12 +13,13 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 
 public class FSMView extends Stage {
-    public FSMView(final List<State> states) {
+    public FSMView(final List<State> states,
+    			   final String regexString) {
         this.setTitle("Finite State Machine Generator");
         this.initStyle(StageStyle.DECORATED);
         this.initOwner(MainPanel.get().getWindow());
         this.initModality(Modality.WINDOW_MODAL);
-        this.setScene(new Scene(this.wrapperPane(new FSMGenerator(states))));
+        this.setScene(new Scene(this.wrapperPane(new FSMGenerator(states, regexString))));
         this.setResizable(false);
         this.show();
     }

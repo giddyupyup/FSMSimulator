@@ -36,13 +36,13 @@ public class Tree {
             altNode = this.parseSeq(lexer);
             if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
                 if(altNode.getNodeType().isInvalid()) {
-                    return new InvalidNode();
+                    return altNode;
                 } else {
                     if(altNode.getNodeType().isSeq()) {
                         if(!altNode.getNodeList().isEmpty()) {
                             nodeList.add(altNode);
                         } else {
-                            return new InvalidNode();
+                            return new InvalidNode("Missing expression inside parenthesis size = idx");
                         }
                     }
                     break;    
@@ -50,14 +50,14 @@ public class Tree {
                 
             } else {
                 if(altNode.getNodeType().isInvalid()) {
-                    return new InvalidNode();
+                    return altNode;
                 }
 
                 if(altNode.getNodeType().isSeq()) {
                     if(!altNode.getNodeList().isEmpty()) {
                         nodeList.add(altNode);
                     } else {
-                        return new InvalidNode();
+                        return new InvalidNode("Missing expression inside parenthesis");
                     }
                 }
 
@@ -78,7 +78,7 @@ public class Tree {
                     }
                     
                     if(leftParen != rightParen) {
-                        return new InvalidNode();
+                        return new InvalidNode("Invalid Regex: Missing left parenthesis");
                     }
 
                     break;
@@ -104,7 +104,7 @@ public class Tree {
                 break;
             } else {
                 if(seqNode.getNodeType().isInvalid()) {
-                    return new InvalidNode();
+                    return seqNode;
                 }
 
                 nodeList.add(seqNode);
@@ -112,7 +112,8 @@ public class Tree {
         }
 
         if(nodeList.isEmpty()) {
-            return new InvalidNode();
+            if(lexer.peek().getSpecials().isUnion()) System.out.println("Invalid Regex: Missing expression in UNION");
+            return new InvalidNode("No expression");
         }
 
         return new SeqNode(nodeList);
@@ -124,7 +125,7 @@ public class Tree {
 
         if(kStarNode != null) {
             if(kStarNode.getNodeType().isInvalid()) {
-                kStarNode = new InvalidNode();
+                return kStarNode;
             } else {
                 if(lexer.getCurrentIdx() != lexer.getParseRegex().size()) {
                     if(lexer.peek().getSpecials() != null &&
@@ -135,7 +136,7 @@ public class Tree {
                 }
             }
         }
-
+        System.out.println("kStarNode : " + kStarNode);
         return kStarNode;
     }
 
@@ -144,19 +145,27 @@ public class Tree {
 
         if(lexer.getCurrentIdx() != lexer.getParseRegex().size()) {
             if(lexer.peek().getSpecials() != null) {
+                System.out.println(lexer.getCurrentIdx());
+                    System.out.println(lexer.getParseRegex().size());
+                    System.out.println(lexer.peek().getSpecials());
                 if(lexer.peek().getSpecials().isLeftParen()) {
                     lexer.advance();
-                    final Node innerNode = this.parseAlt(lexer);
-                    if(innerNode.getNodeType().isInvalid()) {
-                        lexerNode = new InvalidNode();
+                    if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
+                        System.out.println("Check for the left paren");
+                        lexerNode = new InvalidNode("Lexer 4");
                     } else {
-                        if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
-                            lexerNode = new InvalidNode();
-                        } else if(!lexer.peek().getSpecials().isRightParen()) {
-                            lexerNode = new InvalidNode();
-                        } else {
-                            lexer.advance();
+                        final Node innerNode = this.parseAlt(lexer);
+                        if(innerNode.getNodeType().isInvalid()) {
                             lexerNode = innerNode;
+                        } else {
+                            if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
+                                lexerNode = new InvalidNode("Lexer 1");
+                            } else if(!lexer.peek().getSpecials().isRightParen()) {
+                                lexerNode = new InvalidNode("Lexer 2");
+                            } else {
+                                lexer.advance();
+                                lexerNode = innerNode;
+                            }
                         }
                     }
                 } else if(lexer.peek().getSpecials().isEmptyString()) {
@@ -166,7 +175,7 @@ public class Tree {
                           lexer.peek().getSpecials().isRightParen()) {
                     lexerNode = null;
                 } else {
-                    lexerNode = new InvalidNode();
+                    lexerNode = new InvalidNode("Lexer 3");
                 }
             } else {
                 lexerNode = new LitNode(lexer.peek().getChar());
@@ -175,7 +184,7 @@ public class Tree {
         } else {
             lexerNode = null;
         }
-
+        System.out.println("lexerNode : " + lexerNode);
         return lexerNode; 
     }
 }

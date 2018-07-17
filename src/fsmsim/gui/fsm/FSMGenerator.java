@@ -8,6 +8,10 @@ import java.util.ArrayList;
 
 import javafx.scene.layout.Pane;
 import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.paint.Color;
 
 public final class FSMGenerator extends Pane {
         private double stateX;
@@ -21,7 +25,8 @@ public final class FSMGenerator extends Pane {
         
         private static final int STATE_MULTIPLIER = 50;
 
-        public FSMGenerator(final List<State> states) {
+        public FSMGenerator(final List<State> states,
+        					final String regexString) {
             this.setPadding(new Insets(20));
             this.stateX = 75.0;
             this.firstKStarXList = new ArrayList<>();
@@ -33,7 +38,11 @@ public final class FSMGenerator extends Pane {
             this.stateY = 100.0 + (this.multiplier * STATE_MULTIPLIER);
 
             this.fsmStates = this.generateStates(states);
-
+            final Label regexLabel = new Label(regexString);
+        	regexLabel.setFont(Font.font(null, FontWeight.BOLD, 30));
+        	regexLabel.setPadding(new Insets(10, 20, 10, 20));
+        	regexLabel.setTextFill(Color.valueOf("#AF1313"));
+            this.getChildren().add(regexLabel);
             this.getChildren().addAll(this.fsmStates);
         }
 

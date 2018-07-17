@@ -25,6 +25,10 @@ public abstract class Node {
         return null;
     }
 
+    public String getInvalidString() {
+        return null;
+    }
+
     @Override
     public String toString() {
         return this.getNodeType().toString();
@@ -101,8 +105,16 @@ public abstract class Node {
     }
 
     public static class InvalidNode extends Node {
-        public InvalidNode() {
+        private final String invalidString;
+
+        public InvalidNode(final String invalidString) {
             super(NodeType.INVALID);
+            this.invalidString = invalidString;
+        }
+
+        @Override
+        public String getInvalidString() {
+            return this.invalidString;
         }
     }
 

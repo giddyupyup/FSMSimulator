@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class FSMApp extends Application {
     @Override
     public void start(final Stage stage) throws Exception {
-        stage.setTitle("FSMSimulator");
+        stage.setTitle("Finite State Machine Simulator");
         stage.setResizable(false);
         stage.setScene(MainPanel.get());
         stage.show();
