@@ -42,7 +42,7 @@ public class Tree {
                         if(!altNode.getNodeList().isEmpty()) {
                             nodeList.add(altNode);
                         } else {
-                            return new InvalidNode("Missing expression inside parenthesis size = idx");
+                            return new InvalidNode("Invalid Regex: Missing expression inside parenthesis");
                         }
                     }
                     break;    
@@ -57,7 +57,7 @@ public class Tree {
                     if(!altNode.getNodeList().isEmpty()) {
                         nodeList.add(altNode);
                     } else {
-                        return new InvalidNode("Missing expression inside parenthesis");
+                        return new InvalidNode("Invalid Regex: Missing expression inside parenthesis");
                     }
                 }
 
@@ -78,7 +78,8 @@ public class Tree {
                     }
                     
                     if(leftParen != rightParen) {
-                        return new InvalidNode("Invalid Regex: Missing left parenthesis");
+                        final String invalidString = (leftParen > rightParen) ? "right" : "left";
+                        return new InvalidNode("Invalid Regex: Missing " + invalidString + " parenthesis");
                     }
 
                     break;
@@ -112,8 +113,11 @@ public class Tree {
         }
 
         if(nodeList.isEmpty()) {
-            if(lexer.peek().getSpecials().isUnion()) System.out.println("Invalid Regex: Missing expression in UNION");
-            return new InvalidNode("No expression");
+            String invalidString;
+            if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) invalidString = "Invalid Regex: Missing expression in UNION";
+            else if(lexer.peek().getSpecials().isRightParen()) invalidString = "Invalid Regex: Missing expression inside parenthesis";
+            else invalidString = "Invalid Regex: Missing expression in UNION";
+            return new InvalidNode(invalidString);
         }
 
         return new SeqNode(nodeList);
@@ -136,7 +140,7 @@ public class Tree {
                 }
             }
         }
-        System.out.println("kStarNode : " + kStarNode);
+
         return kStarNode;
     }
 
@@ -145,23 +149,19 @@ public class Tree {
 
         if(lexer.getCurrentIdx() != lexer.getParseRegex().size()) {
             if(lexer.peek().getSpecials() != null) {
-                System.out.println(lexer.getCurrentIdx());
-                    System.out.println(lexer.getParseRegex().size());
-                    System.out.println(lexer.peek().getSpecials());
                 if(lexer.peek().getSpecials().isLeftParen()) {
                     lexer.advance();
                     if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
-                        System.out.println("Check for the left paren");
-                        lexerNode = new InvalidNode("Lexer 4");
+                        lexerNode = new InvalidNode("Invalid Regex: Missing right parenthesis");
                     } else {
                         final Node innerNode = this.parseAlt(lexer);
                         if(innerNode.getNodeType().isInvalid()) {
                             lexerNode = innerNode;
                         } else {
                             if(lexer.getCurrentIdx() == lexer.getParseRegex().size()) {
-                                lexerNode = new InvalidNode("Lexer 1");
+                                lexerNode = new InvalidNode("Invalid Regex: Missing right parenthesis");
                             } else if(!lexer.peek().getSpecials().isRightParen()) {
-                                lexerNode = new InvalidNode("Lexer 2");
+                                lexerNode = new InvalidNode("Invalid Regex: Missing right parenthesis");
                             } else {
                                 lexer.advance();
                                 lexerNode = innerNode;
@@ -171,11 +171,22 @@ public class Tree {
                 } else if(lexer.peek().getSpecials().isEmptyString()) {
                     lexer.advance();
                     lexerNode = new EpsNode();
-                } else if(lexer.peek().getSpecials().isUnion() ||
-                          lexer.peek().getSpecials().isRightParen()) {
+                } else if(lexer.peek().getSpecials().isRightParen()) {
+                    boolean isLeftParenPresent = false;
+                    for(int i = lexer.getCurrentIdx(); i > -1; --i) {
+                        if(lexer.getParseRegex().get(i).getSpecials() != null &&
+                           lexer.getParseRegex().get(i).getSpecials().isLeftParen()) isLeftParenPresent = true;
+                    }
+
+                    if(!isLeftParenPresent) {
+                        lexerNode = new InvalidNode("Invalid Regex: Missing left parenthesis");
+                    } else {
+                        lexerNode = null;
+                    }
+                } else if(lexer.peek().getSpecials().isUnion()) {
                     lexerNode = null;
                 } else {
-                    lexerNode = new InvalidNode("Lexer 3");
+                    lexerNode = new InvalidNode("Invalid Regex: Missing expression before Kleene star");
                 }
             } else {
                 lexerNode = new LitNode(lexer.peek().getChar());
@@ -184,7 +195,7 @@ public class Tree {
         } else {
             lexerNode = null;
         }
-        System.out.println("lexerNode : " + lexerNode);
+
         return lexerNode; 
     }
 }

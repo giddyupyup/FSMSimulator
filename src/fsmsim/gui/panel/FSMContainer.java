@@ -62,7 +62,7 @@ public class FSMContainer extends VBox {
 
         
         this.setAlignment(Pos.CENTER_LEFT);
-        this.setPadding(new Insets(0, 0, 25, 0));
+        this.setPadding(new Insets(0, 10, 25, 10));
         this.setSpacing(10);
         this.getChildren().addAll(inputPane, invalidPane);
     }
@@ -75,7 +75,7 @@ public class FSMContainer extends VBox {
             if(event.getCode() != KeyCode.SHIFT) {
                 if(userInput.getText() == null || userInput.getText().trim().isEmpty()) {
                     userInput.setStyle("-fx-border-color: red; -fx-focus-color: red;");
-                    invalidRegex.setText("Empty String");
+                    invalidRegex.setText("Empty Regular Expression");
                 } else {
                     FSMContainer.regexTree = new Tree(regex.parse(userInput.getText().replaceAll("\\s","")));
 
